@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="673.0" text="Tweet Analysis System" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.mavenproject1.FXMLController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+         <children>
+            <VBox layoutX="144.0" layoutY="31.0" prefHeight="372.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0">
+                    <items>
+                        <TextField fx:id="searchTerm" onAction="#handleActionButton" prefHeight="27.0" prefWidth="131.0" />
+                        <ComboBox fx:id="filterBy" prefHeight="27.0" prefWidth="121.0" promptText="Filter" />
+                      <Button fx:id="button" mnemonicParsing="false" onAction="#handleActionButton" text="Search" />
+                        <Button contentDisplay="RIGHT" disable="true" mnemonicParsing="false" prefHeight="27.0" prefWidth="85.0" text="Chart" textAlignment="RIGHT" />
+                        <Button disable="true" mnemonicParsing="false" prefHeight="27.0" prefWidth="82.0" text="Map" textAlignment="CENTER" />
+                    </items>
+                  </ToolBar>
+                  <TableView fx:id="table" prefHeight="320.0" prefWidth="578.0">
+                    <columns>
+                      <TableColumn fx:id="screenName" editable="false" prefWidth="116.99999845027924" text="Screen Name" />
+                      <TableColumn fx:id="tweetText" prefWidth="346.00003814697266" text="Text" />
+                        <TableColumn fx:id="createdOn" prefWidth="95.99996948242188" text="Date" />
+                        <TableColumn fx:id="sentiment" prefWidth="91.0" text="Sentiment" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children></AnchorPane>
+  </content>
+</TitledPane>
