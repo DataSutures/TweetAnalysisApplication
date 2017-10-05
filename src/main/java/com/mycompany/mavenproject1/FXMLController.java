@@ -21,52 +21,46 @@ import java.util.Iterator;
 import twitter4j.Status;
 import java.util.LinkedHashSet;
 import java.util.List;
+import javafx.scene.chart.BarChart;
+import javafx.scene.control.Tab;
+import javafx.scene.layout.AnchorPane;
 
-public class FXMLController implements Initializable {
-
+public class FXMLController implements Initializable {   
+    private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
+    private final ObservableList<Status> cols = FXCollections.observableArrayList();
     @FXML
-    private ComboBox<String> filterBy;
-    @FXML 
-    private TextField searchTerm;
-    @FXML 
-    private Button button;
-    @FXML 
+    private Tab TweetTab;
+   
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> filterBox;
+    @FXML
+    private Button submitButton;
+    @FXML
     private TableView<TableObject> table;
     @FXML 
     private TableColumn<TableObject, String> screenName;
     @FXML 
     private TableColumn<TableObject, String> tweetText;
-    @FXML 
-    private TableColumn<TableObject, String> createdOn;
-    @FXML 
-    private TableColumn<TableObject, String> sentiment;
-    
-    private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
-    private final ObservableList<Status> cols = FXCollections.observableArrayList();
-
     @FXML
-    private void handleActionButton(ActionEvent event){
-        String toSearch = searchTerm.getText();
-        List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
-        String sn,text,date,sent;
-        for (Iterator<Status> it = tweetResult.iterator(); it.hasNext();) {
-            Status s = it.next();
-            sn = s.getUser().getScreenName();
-            text = s.getText();
-            date = s.getCreatedAt().toString(); 
-            // Add Sentiment Analysis Here 
-            sent = "Coming Soon";
-            TableObject to = new TableObject(sn,text,date,sent);
-            System.out.print(to.toString());
-            tweets.add(to);
-        }
-        //did u add this last night I changed it from .getItems)().setItems()     
-        table.setItems(tweets);
-    }
+    private TableColumn<TableObject, String> createdOn; 
+    @FXML
+    private TableColumn<TableObject, String> sentiment;
+    @FXML
+    private AnchorPane anchorPane;
+    @FXML
+    private AnchorPane anchorPane1;
+    @FXML
+    private Tab BarChartTab;
+    @FXML
+    private BarChart<?, ?> barGraph;
+
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        filterBy.getItems().addAll(
+        
+        filterBox.getItems().addAll(
                 "All",
                 "Positive", 
                 "Negative", 
@@ -80,4 +74,23 @@ public class FXMLController implements Initializable {
         sentiment.setCellValueFactory(new PropertyValueFactory<TableObject, String>("sentiment"));
     }  
 
+    @FXML
+    private void handleActionButton(ActionEvent event) {
+        String toSearch = searchField.getText();
+        List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
+        String sn,text,date,sent;
+        for (Iterator<Status> it = tweetResult.iterator(); it.hasNext();) {
+            Status s = it.next();
+            sn = s.getUser().getScreenName();
+            text = s.getText();
+            date = s.getCreatedAt().toString(); 
+            // Add Sentiment Analysis Here 
+            sent = "Coming Soon"; 
+            TableObject to = new TableObject(sn,text,date,sent);
+            System.out.print(to.toString());
+            tweets.add(to);
+        }
+       
+         table.setItems(tweets);
+    }
 }
