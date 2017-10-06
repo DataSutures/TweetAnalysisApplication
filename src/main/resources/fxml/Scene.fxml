@@ -29,7 +29,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab fx:id="ChartTab" onSelectionChanged="#loadChart" text="Charts">
+                <Tab fx:id="ChartTab" text="Charts">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="404.0" prefWidth="985.0">
                            <children>

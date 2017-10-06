@@ -109,12 +109,8 @@ public class FXMLController implements Initializable {
         }
        
          table.setItems(tweets);
-    }
-
-    @FXML
-    private void loadChart(Event event) {
-        
-        //bar chart code
+         
+         //bar chart code
         XYChart.Series set1 = new XYChart.Series<>();
         /* use later to change color
         final XYChart.Data<String, Number> dataP = new XYChart.Data(positive, 25601.34);
@@ -145,6 +141,6 @@ public class FXMLController implements Initializable {
         pieChart.setData(pieChartData);
     
     
-    
     }
+
 }
