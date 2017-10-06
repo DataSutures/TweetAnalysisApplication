@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.web.*?>
 <?import javafx.scene.chart.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -29,7 +30,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab fx:id="ChartTab" onSelectionChanged="#loadChart" text="Charts">
+                <Tab fx:id="ChartTab" text="Charts">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="404.0" prefWidth="985.0">
                            <children>
@@ -45,6 +46,15 @@
                            </children></AnchorPane>
                   </content>
                 </Tab>
+                  <Tab fx:id="MapTab" onSelectionChanged="#loadMaps" text="Google Map">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="604.0" prefWidth="1036.0">
+                           <children>
+                              <WebView fx:id="webView" layoutY="1.0" prefHeight="591.0" prefWidth="1022.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
               </tabs>
             </TabPane>
             <TextField fx:id="searchField" layoutX="140.0" layoutY="51.0" prefHeight="39.0" prefWidth="292.0" />
