@@ -29,9 +29,20 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab fx:id="BarChart" text="Bar Chart">
+                <Tab fx:id="ChartTab" onSelectionChanged="#loadChart" text="Charts">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="404.0" prefWidth="985.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="404.0" prefWidth="985.0">
+                           <children>
+                              <BarChart fx:id="barChart" layoutX="45.0" layoutY="23.0" prefHeight="551.0" prefWidth="490.0" title="Sentiment Numbers">
+                                <xAxis>
+                                  <CategoryAxis label="Sentiment" prefHeight="45.0" prefWidth="410.0" side="BOTTOM" fx:id="xAxis" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis fx:id="yAxis" label="Tweets" side="LEFT" />
+                                </yAxis>
+                              </BarChart>
+                              <PieChart fx:id="pieChart" layoutX="535.0" layoutY="25.0" prefHeight="458.0" prefWidth="500.0" title="Sentiment Analysis" />
+                           </children></AnchorPane>
                   </content>
                 </Tab>
               </tabs>
