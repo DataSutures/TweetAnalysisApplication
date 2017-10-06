@@ -1,5 +1,7 @@
 package com.mycompany.mavenproject1;
 
+import com.aylien.textapi.TextAPIException;
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -75,20 +77,26 @@ public class FXMLController implements Initializable {
     }  
 
     @FXML
-    private void handleActionButton(ActionEvent event) {
+    private void handleActionButton(ActionEvent event) throws TextAPIException {
         String toSearch = searchField.getText();
         List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
-        String sn,text,date,sent;
+        String sn,text,date,sent,sen;
+        AylienAnalysis alienResults = new AylienAnalysis();
         for (Iterator<Status> it = tweetResult.iterator(); it.hasNext();) {
             Status s = it.next();
             sn = s.getUser().getScreenName();
             text = s.getText();
             date = s.getCreatedAt().toString(); 
             // Add Sentiment Analysis Here 
-            sent = "Coming Soon"; 
-            TableObject to = new TableObject(sn,text,date,sent);
-            System.out.print(to.toString());
-            tweets.add(to);
+            sen = alienResults.analyzeTweet(text).getPolarity().toString();
+            sent = StringUtils.capitalize(sen); 
+            
+            
+                TableObject to = new TableObject(sn,text,date,sent);
+                System.out.print(to.toString());
+                tweets.add(to);
+            
+
         }
        
          table.setItems(tweets);
