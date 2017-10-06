@@ -21,11 +21,22 @@ import java.util.Iterator;
 import twitter4j.Status;
 import java.util.LinkedHashSet;
 import java.util.List;
+import javafx.event.Event;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 
 public class FXMLController implements Initializable {   
+    final static String positive ="Positive";
+    final static String negative ="Negative";
+    final static String neutral = "Neutral";
+    
+    
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     private final ObservableList<Status> cols = FXCollections.observableArrayList();
     @FXML
@@ -52,9 +63,15 @@ public class FXMLController implements Initializable {
     @FXML
     private AnchorPane anchorPane1;
     @FXML
-    private Tab BarChartTab;
+    private Tab ChartTab;
     @FXML
-    private BarChart<?, ?> barGraph;
+    private BarChart<String, Number> barChart;
+    @FXML
+    private NumberAxis yAxis;
+    @FXML
+    private CategoryAxis xAxis;
+    @FXML
+    private PieChart pieChart;
 
         
     @Override
@@ -92,5 +109,38 @@ public class FXMLController implements Initializable {
         }
        
          table.setItems(tweets);
+         
+         //bar chart code
+        XYChart.Series set1 = new XYChart.Series<>();
+        /* use later to change color
+        final XYChart.Data<String, Number> dataP = new XYChart.Data(positive, 25601.34);
+        final XYChart.Data<String, Number> dataNE = new XYChart.Data(neutral, 41941.19);
+        final XYChart.Data<String, Number> dataNU = new XYChart.Data(negative, 35000.19);
+        set1.getData().add(dataP);
+	set1.getData().add(dataNE);
+	set1.getData().add(dataNU);
+        */
+        
+        
+        //to change the values on the bar chart change numbers
+        // set values of 200, 300,100
+        set1.getData().add(new XYChart.Data<>(positive,200));
+        set1.getData().add(new XYChart.Data<>(negative, 300));
+        set1.getData().add(new XYChart.Data<>(neutral,100));
+        barChart.getData().add(set1);
+    
+        //piechart code
+        //to change value of pie chart adjust 100,200,300
+         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+            new PieChart.Data("Positive", 200),
+             new PieChart.Data("Negative",300),
+            new PieChart.Data("Neutral", 100)
+           
+    
+        );
+        pieChart.setData(pieChartData);
+    
+    
     }
+
 }
