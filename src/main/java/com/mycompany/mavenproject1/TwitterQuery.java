@@ -23,8 +23,8 @@ public class TwitterQuery {
         Twitter twitter = new TwitterFactory().getInstance();
         List<Status> tweetsList = new ArrayList<>();
         try {
-            Query q = new Query(topic + " -filter:links -filter:retweets -filter:replies ");
-            q.setCount(5);
+            Query q = new Query(topic + " -filter:links -filter:retweets -filter:replies geocode:37.09024,-95.712891,2500km");
+            q.setCount(10);
             q.setLang("en");
             QueryResult r = twitter.search(q);  
             tweetsList = r.getTweets();
