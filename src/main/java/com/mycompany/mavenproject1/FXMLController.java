@@ -40,10 +40,12 @@ public class FXMLController implements Initializable {
     final static String positive ="Positive";
     final static String negative ="Negative";
     final static String neutral = "Neutral";
-    final static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
-    final static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
-    final static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
-    
+    static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
+    static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
+    static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
+    private int positiveCount = 0;
+    private int negativeCount = 0;
+    private int neutralCount = 0;
     
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     @FXML
@@ -96,6 +98,12 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
+        if (tweets.isEmpty() == false) {
+            // popup "Do you want to save your current session?"
+            // if "Save" Save to mongo else clear Table, Charts and map for new search
+            tweets.clear();
+            table.refresh();
+        }
         String toSearch = searchField.getText();
         // Query Twitter by topic
         List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
@@ -106,13 +114,16 @@ public class FXMLController implements Initializable {
             sn = s.getUser().getScreenName();
             text = s.getText();
             date = s.getCreatedAt().toString();
-            
-            // Add Tweet text and Location string to mapMarkerData
             String[] textLoc =  {text, s.getUser().getLocation()};
-            // Set ArrayList for markers by Sentiment
-            mapMarkerPositive.add(textLoc);
-            sen = alienResults.analyzeTweet(text).getPolarity().toString();
+            sen = alienResults.analyzeTweet(text).getPolarity().toString(); // Analyze Text
             sent = StringUtils.capitalize(sen);
+            // Add to appropriate Marker List based on Sentiment and increase counts
+            switch (sent){
+                case "Positive": mapMarkerPositive.add(textLoc); positiveCount++; break;
+                case "Negative":mapMarkerNegative.add(textLoc); negativeCount++; break;
+                default: mapMarkerNeutral.add(textLoc); neutralCount++; break;
+                
+            }
             TableObject to = new TableObject(sn,text,date,sent);
             //System.out.print(to.toString());
             tweets.add(to);
@@ -136,9 +147,9 @@ public class FXMLController implements Initializable {
         
         //to change the values on the bar chart change numbers
         // set values of 200, 300,100
-        set1.getData().add(new XYChart.Data<>(positive,200));
-        set1.getData().add(new XYChart.Data<>(negative, 300));
-        set1.getData().add(new XYChart.Data<>(neutral,100));
+        set1.getData().add(new XYChart.Data<>(positive,positiveCount));
+        set1.getData().add(new XYChart.Data<>(negative, negativeCount));
+        set1.getData().add(new XYChart.Data<>(neutral,neutralCount));
         barChart.getData().add(set1);
     
         //piechart code
@@ -166,7 +177,7 @@ String link =   "<!DOCTYPE html>\n" +
                 "          type=\"text/javascript\"></script>\n" +
                 "</head> \n" +
                 "<body>\n" +
-                "  <div id=\"map\" style=\" width: 100%; height: 100%; margin:0; padding:0;position:absolute;\"></div>\n" +
+                "  <div id=\"map\" style=\" width: 100%; height: 100%; margin:0; padding:0; position:absolute;\"></div>\n" +
                 "\n" +
                 "  <script type=\"text/javascript\">\n" +
                 "    var locations = [\n" +
