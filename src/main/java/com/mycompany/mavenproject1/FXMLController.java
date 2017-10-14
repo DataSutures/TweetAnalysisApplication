@@ -17,8 +17,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import twitter4j.Status;
 import java.util.LinkedHashSet;
@@ -32,18 +32,22 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
 
 public class FXMLController implements Initializable {   
+    
     final static String positive ="Positive";
     final static String negative ="Negative";
     final static String neutral = "Neutral";
+    final static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
+    final static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
+    final static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
     
     
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
-    private final ObservableList<Status> cols = FXCollections.observableArrayList();
     @FXML
-    private Tab TweetTab;
-   
+    private Tab TweetTab; 
     @FXML
     private TextField searchField;
     @FXML
@@ -74,13 +78,16 @@ public class FXMLController implements Initializable {
     private CategoryAxis xAxis;
     @FXML
     private PieChart pieChart;
+    @FXML
+    private Tab MapTab;
+    @FXML
+    private WebView webView;
 
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // I added this to make it work --yeah ur suppose to add thecell manually there was a website that had
-        //fx to scenebuilder that showed how to mplement this that i found last night 
+        // Initialize Table columns
         screenName.setCellValueFactory(new PropertyValueFactory<TableObject, String>("screenName"));
         tweetText.setCellValueFactory(new PropertyValueFactory<TableObject, String>("tweetText"));
         createdOn.setCellValueFactory(new PropertyValueFactory<TableObject, String>("createdOn"));
@@ -90,6 +97,7 @@ public class FXMLController implements Initializable {
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
         String toSearch = searchField.getText();
+        // Query Twitter by topic
         List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
         String sn,text,date,sent,sen;
         AylienAnalysis alienResults = new AylienAnalysis();
@@ -97,15 +105,17 @@ public class FXMLController implements Initializable {
             Status s = it.next();
             sn = s.getUser().getScreenName();
             text = s.getText();
-            date = s.getCreatedAt().toString(); 
-            // Add Sentiment Analysis Here 
+            date = s.getCreatedAt().toString();
+            
+            // Add Tweet text and Location string to mapMarkerData
+            String[] textLoc =  {text, s.getUser().getLocation()};
+            // Set ArrayList for markers by Sentiment
+            mapMarkerPositive.add(textLoc);
             sen = alienResults.analyzeTweet(text).getPolarity().toString();
-            sent = StringUtils.capitalize(sen); 
-            
-            
-                TableObject to = new TableObject(sn,text,date,sent);
-                System.out.print(to.toString());
-                tweets.add(to);
+            sent = StringUtils.capitalize(sen);
+            TableObject to = new TableObject(sn,text,date,sent);
+            //System.out.print(to.toString());
+            tweets.add(to);
             
 
         }
@@ -141,8 +151,62 @@ public class FXMLController implements Initializable {
     
         );
         pieChart.setData(pieChartData);
-    
-    
+         
     }
 
+    @FXML
+    private void loadMaps(Event event) {
+        System.out.println("hi");
+String link =   "<!DOCTYPE html>\n" +
+                "<html> \n" +
+                "<head> \n" +
+                "  <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" /> \n" +
+                "  <title>Google Maps Multiple Markers</title> \n" +
+                "  <script src=\"http://maps.google.com/maps/api/js?sensor=false\" \n" +
+                "          type=\"text/javascript\"></script>\n" +
+                "</head> \n" +
+                "<body>\n" +
+                "  <div id=\"map\" style=\" width: 100%; height: 100%; margin:0; padding:0;position:absolute;\"></div>\n" +
+                "\n" +
+                "  <script type=\"text/javascript\">\n" +
+                "    var locations = [\n" +
+                "      ['Bondi Beach', -33.890542, 151.274856, 4],\n" +
+                "      ['Coogee Beach', -33.923036, 151.259052, 5],\n" +
+                "      ['Cronulla Beach', -34.028249, 151.157507, 3],\n" +
+                "      ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],\n" +
+                "      ['Maroubra Beach', -33.950198, 151.259302, 1]\n" +
+                "    ];\n" +
+                "\n" +
+                "    var map = new google.maps.Map(document.getElementById('map'), {\n" +
+                "      zoom: 10,\n" +
+                "      center: new google.maps.LatLng(-33.92, 151.25),\n" +
+                "      mapTypeId: google.maps.MapTypeId.ROADMAP\n" +
+                "    });\n" +
+                "\n" +
+                "    var infowindow = new google.maps.InfoWindow();\n" +
+                "\n" +
+                "    var marker, i;\n" +
+                "\n" +
+                "    for (i = 0; i < locations.length; i++) {  \n" +
+                "      marker = new google.maps.Marker({\n" +
+                "        position: new google.maps.LatLng(locations[i][1], locations[i][2]),\n" +
+                "        map: map\n" +
+                "      });\n" +
+                "\n" +
+                "      google.maps.event.addListener(marker, 'click', (function(marker, i) {\n" +
+                "        return function() {\n" +
+                "          infowindow.setContent(locations[i][0]);\n" +
+                "          infowindow.open(map, marker);\n" +
+                "        }\n" +
+                "      })(marker, i));\n" +
+                "    }\n" +
+                "  </script>\n" +
+                "</body>\n" +
+                "</html>";
+        WebEngine engine = webView.getEngine();
+        //URL url = getClass().getResource("map.html");
+        //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
+        engine.loadContent(link);
+        
+    }
 }
