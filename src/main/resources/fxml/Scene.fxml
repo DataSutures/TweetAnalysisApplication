@@ -36,7 +36,7 @@
                                     <Insets />
                                  </opaqueInsets>
                               </TextField>
-                              <Button fx:id="submitButton" layoutY="51.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#handleActionButton" style="-fx-background-color: #6DBCDB;" text="Search">
+                              <Button fx:id="submitButton" layoutY="51.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#handleActionButton" style="-fx-background-color: #6DBCDB;" text="Search" HBox.hgrow="NEVER">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
