@@ -78,13 +78,7 @@ public class FXMLController implements Initializable {
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        filterBox.getItems().addAll(
-                "All",
-                "Positive", 
-                "Negative", 
-                "Neutral"
-        );
+
         // I added this to make it work --yeah ur suppose to add thecell manually there was a website that had
         //fx to scenebuilder that showed how to mplement this that i found last night 
         screenName.setCellValueFactory(new PropertyValueFactory<TableObject, String>("screenName"));
