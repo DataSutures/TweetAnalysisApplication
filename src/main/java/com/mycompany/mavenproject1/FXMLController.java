@@ -38,7 +38,9 @@ public class FXMLController implements Initializable {
     final static String positive ="Positive";
     final static String negative ="Negative";
     final static String neutral = "Neutral";
-    final static ArrayList<String[]> mapMarkerData = new ArrayList<>();
+    final static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
+    final static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
+    final static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
     
     
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
@@ -82,13 +84,7 @@ public class FXMLController implements Initializable {
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        filterBox.getItems().addAll(
-                "All",
-                "Positive", 
-                "Negative", 
-                "Neutral"
-        );
+
         // Initialize Table columns
         screenName.setCellValueFactory(new PropertyValueFactory<TableObject, String>("screenName"));
         tweetText.setCellValueFactory(new PropertyValueFactory<TableObject, String>("tweetText"));
@@ -120,7 +116,7 @@ public class FXMLController implements Initializable {
             
             // Add Tweet text and Location string to mapMarkerData
             String[] textLoc =  {text, s.getUser().getLocation()};
-            mapMarkerData.add(textLoc);
+            mapMarkerPositive.add(textLoc);
         }
        
          table.setItems(tweets);
@@ -168,7 +164,7 @@ String link =   "<!DOCTYPE html>\n" +
                 "          type=\"text/javascript\"></script>\n" +
                 "</head> \n" +
                 "<body>\n" +
-                "  <div id=\"map\" style=\"width: 500px; height: 400px;\"></div>\n" +
+                "  <div id=\"map\" style=\" width: 100%; height: 100%; margin:0; padding:0;position:absolute;\"></div>\n" +
                 "\n" +
                 "  <script type=\"text/javascript\">\n" +
                 "    var locations = [\n" +
