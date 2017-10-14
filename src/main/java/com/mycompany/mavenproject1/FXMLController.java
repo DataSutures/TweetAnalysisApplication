@@ -167,8 +167,9 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void loadMaps(Event event) {
-        System.out.println("hi");
-String link =   "<!DOCTYPE html>\n" +
+        System.out.println("hi");                 
+               //look at location array
+               String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
                 "  <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" /> \n" +
@@ -178,19 +179,18 @@ String link =   "<!DOCTYPE html>\n" +
                 "</head> \n" +
                 "<body>\n" +
                 "  <div id=\"map\" style=\" width: 100%; height: 100%; margin:0; padding:0; position:absolute;\"></div>\n" +
-                "\n" +
-                "  <script type=\"text/javascript\">\n" +
-                "    var locations = [\n" +
-                "      ['Bondi Beach', -33.890542, 151.274856, 4],\n" +
-                "      ['Coogee Beach', -33.923036, 151.259052, 5],\n" +
-                "      ['Cronulla Beach', -34.028249, 151.157507, 3],\n" +
-                "      ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],\n" +
-                "      ['Maroubra Beach', -33.950198, 151.259302, 1]\n" +
-                "    ];\n" +
-                "\n" +
+                "\n"+
+                "<script type=\"text/javascript\">\n";
+                String location="    var locations = [\n" +
+                "      ['Tweet Data, Sentiment', 30.984298, -91.96233, 3],\n" +
+                "      ['New York', 40.712775, -74.005973, 2],\n" +
+                "      ['California', 36.778261, -119.417932, 1],\n" +
+               
+                "    ];\n";
+                String part2="\n" +
                 "    var map = new google.maps.Map(document.getElementById('map'), {\n" +
                 "      zoom: 10,\n" +
-                "      center: new google.maps.LatLng(-33.92, 151.25),\n" +
+                "      center: new google.maps.LatLng(37.09024, -91.962333),\n" +
                 "      mapTypeId: google.maps.MapTypeId.ROADMAP\n" +
                 "    });\n" +
                 "\n" +
@@ -198,6 +198,7 @@ String link =   "<!DOCTYPE html>\n" +
                 "\n" +
                 "    var marker, i;\n" +
                 "\n" +
+                "\n var bounds = new google.maps.LatLngBounds();" +       
                 "    for (i = 0; i < locations.length; i++) {  \n" +
                 "      marker = new google.maps.Marker({\n" +
                 "        position: new google.maps.LatLng(locations[i][1], locations[i][2]),\n" +
@@ -206,6 +207,7 @@ String link =   "<!DOCTYPE html>\n" +
                 "\n" +
                 "      google.maps.event.addListener(marker, 'click', (function(marker, i) {\n" +
                 "        return function() {\n" +
+                //info windows set the data for the tweet
                 "          infowindow.setContent(locations[i][0]);\n" +
                 "          infowindow.open(map, marker);\n" +
                 "        }\n" +
@@ -214,9 +216,27 @@ String link =   "<!DOCTYPE html>\n" +
                 "  </script>\n" +
                 "</body>\n" +
                 "</html>";
+
+
+
+
+             /*
+                code centers around the markers
+                var markers = [];//some array
+                var bounds = new google.maps.LatLngBounds();
+                for (var i = 0; i < markers.length; i++) {
+                    bounds.extend(markers[i].getPosition());
+                }
+                map.fitBounds(bounds);
+                
+                */
+
+
+
         WebEngine engine = webView.getEngine();
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
+        String link = part1+location+part2;
         engine.loadContent(link);
         
     }
