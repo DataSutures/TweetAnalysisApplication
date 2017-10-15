@@ -30,6 +30,11 @@
             <artifactId>mongodb-driver</artifactId>
             <version>3.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>ControlsFx</groupId>
+            <artifactId>controls</artifactId>
+            <version>8.0.2</version>
+        </dependency>
     </dependencies>
     <organization>
         <!-- Used as the 'Vendor' for JNLP generation -->
