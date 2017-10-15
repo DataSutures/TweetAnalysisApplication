@@ -17,11 +17,18 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.text.Format;
 
 import twitter4j.Status;
-import java.util.LinkedHashSet;
 import java.util.List;
 import javafx.event.Event;
 import javafx.scene.chart.BarChart;
@@ -46,6 +53,10 @@ public class FXMLController implements Initializable {
     private int positiveCount = 0;
     private int negativeCount = 0;
     private int neutralCount = 0;
+    private XYChart.Series series1;
+    private XYChart.Series series2;
+    private XYChart.Series series3;
+    ObservableList<PieChart.Data> pieChartData;
     
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     @FXML
@@ -80,6 +91,7 @@ public class FXMLController implements Initializable {
     private CategoryAxis xAxis;
     @FXML
     private PieChart pieChart;
+    
     @FXML
     private Tab MapTab;
     @FXML
@@ -93,7 +105,9 @@ public class FXMLController implements Initializable {
         screenName.setCellValueFactory(new PropertyValueFactory<TableObject, String>("screenName"));
         tweetText.setCellValueFactory(new PropertyValueFactory<TableObject, String>("tweetText"));
         createdOn.setCellValueFactory(new PropertyValueFactory<TableObject, String>("createdOn"));
+        createdOn.setStyle("-fx-alignment: CENTER;");
         sentiment.setCellValueFactory(new PropertyValueFactory<TableObject, String>("sentiment"));
+        sentiment.setStyle("-fx-alignment: CENTER;");
     }  
 
     @FXML
@@ -103,63 +117,94 @@ public class FXMLController implements Initializable {
             // if "Save" Save to mongo else clear Table, Charts and map for new search
             tweets.clear();
             table.refresh();
+            series1.getData().clear();
+            barChart.getData().clear();
+            pieChartData.clear();
+            pieChart.getData().clear();
+            positiveCount = 0;
+            negativeCount = 0;
+            neutralCount = 0;
         }
         String toSearch = searchField.getText();
         // Query Twitter by topic
         List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
         String sn,text,date,sent,sen;
         AylienAnalysis alienResults = new AylienAnalysis();
-        for (Iterator<Status> it = tweetResult.iterator(); it.hasNext();) {
-            Status s = it.next();
-            sn = s.getUser().getScreenName();
-            text = s.getText();
-            date = s.getCreatedAt().toString();
-            String[] textLoc =  {text, s.getUser().getLocation()};
-            sen = alienResults.analyzeTweet(text).getPolarity().toString(); // Analyze Text
-            sent = StringUtils.capitalize(sen);
-            // Add to appropriate Marker List based on Sentiment and increase counts
-            switch (sent){
-                case "Positive": mapMarkerPositive.add(textLoc); positiveCount++; break;
-                case "Negative":mapMarkerNegative.add(textLoc); negativeCount++; break;
-                default: mapMarkerNeutral.add(textLoc); neutralCount++; break;
-                
-            }
-            TableObject to = new TableObject(sn,text,date,sent);
-            //System.out.print(to.toString());
-            tweets.add(to);
-            
+        /* Try and catch Aylien Rate limit exceeded exception
+        try{*/
+            for (Iterator<Status> it = tweetResult.iterator(); it.hasNext();) {
+                Status s = it.next();
+                sn = s.getUser().getScreenName();
+                text = s.getText();
 
-        }
-       
-         table.setItems(tweets);
+                // Format date i.e. 9/12/20017
+                String[] month = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+                date = s.getCreatedAt().toString();
+                // get Month, day, year only
+                date =  (Arrays.asList(month).indexOf(date.substring(4,7)) + 1) +
+                        "-" + date.substring(8, 10) + "-" + date.substring(24,date.length());
+
+                // Store text and location to use for markers
+                String[] textLoc =  {text, s.getUser().getLocation()};
+
+                // Analyze Text
+                sen = alienResults.analyzeTweet(text).getPolarity(); 
+                sent = StringUtils.capitalize(sen);
+
+                // Add TextLoc to appropriate Marker List based on Sentiment and increase counts
+                switch (sent){
+                    case "Positive": mapMarkerPositive.add(textLoc); positiveCount++; break;
+                    case "Negative":mapMarkerNegative.add(textLoc); negativeCount++; break;
+                    default: mapMarkerNeutral.add(textLoc); neutralCount++; break;   
+                }
+                //sent = "Coming Soon";
+                // Create Table Object and add to tweets List
+                TableObject to = new TableObject(sn,text,date,sent);
+                //System.out.print(to.toString());
+                tweets.add(to);
+            }
+            table.setItems(tweets);
+        //}
+        /*catch(Exception e){
+            Alert alert = new Alert(AlertType.ERROR, "You have reached the daily rate limit for Aylien API Analysis.");
+             Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                alert.close();
+            }
+        }*/
          
-         //bar chart code
-        XYChart.Series set1 = new XYChart.Series<>();
-        /* use later to change color
-        final XYChart.Data<String, Number> dataP = new XYChart.Data(positive, 25601.34);
-        final XYChart.Data<String, Number> dataNE = new XYChart.Data(neutral, 41941.19);
-        final XYChart.Data<String, Number> dataNU = new XYChart.Data(negative, 35000.19);
-        set1.getData().add(dataP);
-	set1.getData().add(dataNE);
-	set1.getData().add(dataNU);
-        */
+        //bar chart code
+        series1 = new XYChart.Series<>();
+        series1.setName(positive);
+        series2 = new XYChart.Series<>();
+        series2.setName(negative);
+        series3 = new XYChart.Series<>();
+        series3.setName(neutral);
+        XYChart.Data<String,Number> dataPOS = new XYChart.Data("",positiveCount);
+        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", negativeCount);
+        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", neutralCount);
+        series1.getData().add(dataPOS);
+	series2.getData().add(dataNEG);
+	series3.getData().add(dataNEU);  
+        barChart.getData().addAll(series1,series2,series3);
+         
         
         
-        //to change the values on the bar chart change numbers
+        /*/to change the values on the bar chart change numbers
         // set values of 200, 300,100
-        set1.getData().add(new XYChart.Data<>(positive,positiveCount));
-        set1.getData().add(new XYChart.Data<>(negative, negativeCount));
-        set1.getData().add(new XYChart.Data<>(neutral,neutralCount));
-        barChart.getData().add(set1);
+        series1 = new XYChart.Series<>();
+        series1.getData().add(new XYChart.Data<>(positive,positiveCount));
+        series1.getData().add(new XYChart.Data<>(negative, negativeCount));
+        series1.getData().add(new XYChart.Data<>(neutral,neutralCount));
+        //barChart.setBarGap(50.0);
+        barChart.getData().add(series1);
+                */
     
         //piechart code
-        //to change value of pie chart adjust 100,200,300
-         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-            new PieChart.Data("Positive", 200),
-             new PieChart.Data("Negative",300),
-            new PieChart.Data("Neutral", 100)
-           
-    
+         pieChartData = FXCollections.observableArrayList(
+            new PieChart.Data("Positive ", positiveCount),
+            new PieChart.Data("Negative",negativeCount),
+            new PieChart.Data("Neutral", neutralCount)
         );
         pieChart.setData(pieChartData);
          

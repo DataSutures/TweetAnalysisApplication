@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package com.mycompany.mavenproject1;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
 import javafx.beans.property.SimpleStringProperty;
 /**
  *

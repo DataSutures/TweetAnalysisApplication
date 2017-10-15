@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="0.0" prefHeight="634.0" prefWidth="890.0" style="-fx-background-color: #D7DADB;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.mavenproject1.FXMLController">
+<AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="0.0" prefHeight="634.0" prefWidth="890.0" style="-fx-background-color: #2C3E50;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.mavenproject1.FXMLController">
    <children>
       <VBox style="-fx-background-color: #2C3E50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -73,15 +73,15 @@
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                 </columnConstraints>
                                 <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                                 </rowConstraints>
                                 
-                                                               <children>
+                                <children>
                                    <TableView fx:id="table" style="-fx-background-color: #FFFFFF;" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
                                       <columns>
                                         <TableColumn fx:id="screenName" maxWidth="130.00" minWidth="130.00" prefWidth="134.0" text="Screen Name" />
                                         <TableColumn fx:id="tweetText" prefWidth="567.0" text="Tweet" />
-                                        <TableColumn fx:id="createdOn" maxWidth="200.00" minWidth="200.00" prefWidth="136.0" text="Create On" />
+                                        <TableColumn fx:id="createdOn" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" text="Date" />
                                         <TableColumn fx:id="sentiment" maxWidth="100.00" minWidth="100.00" prefWidth="198.0" text="Sentiment" />
                                       </columns>
                                        <columnResizePolicy>
@@ -99,19 +99,19 @@
                 </Tab>
                 <Tab fx:id="ChartTab" text="Charts">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #D7DADB;">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;">
                            <children>
-                              <HBox style="-fx-background-color: #D7DADB;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
+                              <HBox alignment="CENTER" style="-fx-background-color: #FFFFFF;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="10.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <BarChart fx:id="barChart" layoutX="45.0" layoutY="23.0" prefHeight="551.0" prefWidth="490.0" style="-fx-background-color: #FFFFFF;" title="Sentiment Numbers">
+                                    <BarChart fx:id="barChart" layoutX="45.0" layoutY="23.0" prefHeight="551.0" prefWidth="490.0" style="-fx-background-color: #FFFFFF;" title="Sentiment Summary" HBox.hgrow="ALWAYS">
                                       <xAxis>
                                         <CategoryAxis label="Sentiment" prefHeight="45.0" prefWidth="410.0" side="BOTTOM" fx:id="xAxis" />
                                       </xAxis>
                                       <yAxis>
-                                        <NumberAxis fx:id="yAxis" label="Tweets" side="LEFT" />
+                                        <NumberAxis fx:id="yAxis" label="Number of Tweets" side="LEFT" />
                                       </yAxis>
                                     </BarChart>
-                                    <PieChart fx:id="pieChart" layoutX="535.0" layoutY="25.0" prefHeight="458.0" prefWidth="500.0" style="-fx-background-color: #FFFFFF;" title="Sentiment Analysis" />
+                                    <PieChart fx:id="pieChart" layoutX="535.0" layoutY="25.0" prefHeight="458.0" prefWidth="500.0" style="-fx-background-color: #FFFFFF;" title="Sentiment Pecentages" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                            </children>

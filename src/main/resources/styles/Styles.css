@@ -1,3 +1,17 @@
 .button {
     -fx-font-weight: bold;
 }
+.default-color0.chart-bar {
+-fx-bar-fill: #72E3CD;
+}
+
+.default-color1.chart-bar {
+-fx-bar-fill: #E74C3C;
+}
+.default-color2.chart-bar {
+-fx-bar-fill: #3498DB;
+}
+
+.data0.chart-pie { -fx-pie-color: #72E3CD; }
+.data1.chart-pie { -fx-pie-color: #E74C3C; }
+.data2.chart-pie { -fx-pie-color: #3498DB; }
