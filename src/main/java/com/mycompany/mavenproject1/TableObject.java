@@ -14,13 +14,15 @@ public class TableObject {
     private final SimpleStringProperty tweetText;
     private final SimpleStringProperty createdOn;
     private final SimpleStringProperty sentiment;
+    /* private final SimpleStringProperty place;*/
 
-    public TableObject(String screenName,String tweetText,String createdOn,String sentiment)
+    public TableObject(String screenName,String tweetText,String createdOn,String sentiment/*, String place*/)
     {
         this.screenName = new SimpleStringProperty(screenName);
         this.tweetText = new SimpleStringProperty(tweetText);
         this.createdOn = new SimpleStringProperty(createdOn);
         this.sentiment = new SimpleStringProperty(sentiment);
+        /* this.place = new SimpleStringProperty(place);*/
     }
     public String getScreenName() {
         return screenName.get();
@@ -37,6 +39,10 @@ public class TableObject {
     public String getSentiment() {
         return sentiment.get();
     }
+    /*
+    public String getPlace() {
+        return place.get();
+    */
     @Override
     public String toString(){
         return "sn: " + screenName.get() + "\ntext: " + tweetText.get() + "\ncreatedOn: " +

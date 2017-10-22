@@ -9,6 +9,8 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Iterator;
 
+import javafx.collections.ObservableList;
+
 import twitter4j.Status;
 
 import com.mongodb.util.JSON;
@@ -23,8 +25,6 @@ import org.bson.Document;
 
 import org.json.JSONObject;
 
-import com.aylien.textapi.responses.Sentiment;
-import com.aylien.textapi.TextAPIException;
 
 /**
  *
@@ -47,7 +47,24 @@ public class MongoDB {
         
     }
     // Insert tweets and new feild "Sentiment" with analysis results
-    public void insertTweetCollection(List<Status> tweets){     
+    public void insertTweetCollection(ObservableList<TableObject> tweets){  
+        for (int i = 0; i < tweets.size(); i++){
+            insertOne(tweets.get(i));
+        }
+    }
+     
+    // Creates a new document containing a tweet with reduced fields and inserts it into DB
+    private void insertOne(TableObject tweet){
+        Document newDoc = new Document();
+        newDoc.append("screenName", tweet.getScreenName())
+                .append("text", tweet.getTweetText())
+                .append("created_on", tweet.getCreatedOn())
+                .append("sentiment", tweet.getSentiment());
+ //               .append("place", tweet.getplace());
+        tweetsTable.insert((DBObject)JSON.parse(newDoc.toJson()));
+    } 
+    public DBCollection getCollection(){
+        return tweetsTable;
     }
     // get totals by sentiment and return Iterable list
     public Iterator<DBObject> sentimentTotals(){
@@ -73,7 +90,14 @@ public class MongoDB {
           
         return tweetsTable.find(searchObject,fieldObject).iterator();
 
-    }   
+    }  
+    
+    // close connection to DB
+    public void close(){
+        mongoClient.close();
+    }
+    
+    /* PRINTS FOR DEBUGGING
     public void printSentimentTotals(){
         Iterator<DBObject> it = sentimentTotals();
         while (it.hasNext())
@@ -94,39 +118,5 @@ public class MongoDB {
         while (it.hasNext())
             System.out.print(it.next());
     }
-    // close connection to DB
-    public void close(){
-        mongoClient.close();
-    }
-    // Creates a new document containing a tweet with reduced fields and inserts it into DB
-//    private void insertReduced(Status tweet){
-//        Document newDoc = new Document();
-//        newDoc.append("_id", String.valueOf(tweet.getId()))
-//                .append("screenName",tweet.getUser().getScreenName())
-//                .append("userId", String.valueOf(tweet.getUser().getId()))
-//                .append("text", tweet.getText())
-//                .append("created_on", tweet.getCreatedAt().toInstant().toString())
-//                .append("sentiment", getSentimentStanford(tweet.getText()));
-//        tweetsTable.insert((DBObject)JSON.parse(newDoc.toJson()));
-//    }
-    // Return sentiment string of tweet text feild using Standford NLP
-//    private static String getSentimentStanford(String text){
-//        
-//        StanfordNLP.init();
-//        int score = StanfordNLP.getSentiment(text);
-//        if(score < 2){
-//            return "Negative";
-//        }
-//        else if(score == 2){
-//            return "Neutral";
-//        }else return  "Positive";
-//    }
-     // Return sentiment string of tweet text feild using AylienAPI
-    private static String getSentimentAylien(String text) throws TextAPIException{
-        Sentiment sent;
-        AylienAnalysis alienResults = new AylienAnalysis();
-        sent = alienResults.analyzeTweet(text);
-        return sent.getText();
-    }
-   
+    */
 }
