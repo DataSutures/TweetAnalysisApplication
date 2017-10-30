@@ -125,9 +125,9 @@ public class FXMLController implements Initializable {
             negativeCount = 0;
             neutralCount = 0;
         }
-        String toSearch = searchField.getText();
+        String searchTerm = searchField.getText();
         // Query Twitter by topic
-        List<Status> tweetResult = TwitterQuery.getTweets(toSearch);
+        List<Status> tweetResult = TwitterQuery.getTweets(searchTerm);
         String sn,text,date,sent,sen;
         AylienAnalysis alienResults = new AylienAnalysis();
         /* Try and catch Aylien Rate limit exceeded exception
@@ -157,7 +157,7 @@ public class FXMLController implements Initializable {
                     case "Negative":mapMarkerNegative.add(textLoc); negativeCount++; break;
                     default: mapMarkerNeutral.add(textLoc); neutralCount++; break;   
                 }
-                //sent = "Coming Soon";
+
                 // Create Table Object and add to tweets List
                 TableObject to = new TableObject(sn,text,date,sent);
                 //System.out.print(to.toString());
@@ -186,6 +186,7 @@ public class FXMLController implements Initializable {
         series1.getData().add(dataPOS);
 	series2.getData().add(dataNEG);
 	series3.getData().add(dataNEU);  
+        barChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Summary");
         barChart.getData().addAll(series1,series2,series3);
          
         
@@ -206,6 +207,7 @@ public class FXMLController implements Initializable {
             new PieChart.Data("Negative",negativeCount),
             new PieChart.Data("Neutral", neutralCount)
         );
+        pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
          
     }
