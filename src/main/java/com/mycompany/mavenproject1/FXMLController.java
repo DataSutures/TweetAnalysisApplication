@@ -159,10 +159,13 @@ public class FXMLController implements Initializable {
              new PieChart.Data("Negative",300),
             new PieChart.Data("Neutral", 100)
            
+        
     
         );
         pieChart.setData(pieChartData);
-         
+        //geocoding implementation
+        Maps mapLocation = new Maps();
+        mapLocation.getCoordinates();
     }
 
     @FXML
@@ -183,8 +186,8 @@ public class FXMLController implements Initializable {
                 "<script type=\"text/javascript\">\n";
                 String location="    var locations = [\n" +
                 "      ['Tweet Data, Sentiment', 30.984298, -91.96233, 3],\n" +
-                "      ['New York', 40.712775, -74.005973, 2],\n" +
-                "      ['California', 36.778261, -119.417932, 1],\n" +
+                "      ['New York', 30.984298, -91.96233, 2],\n" +
+                "      ['California', 30.984298, -91.96233, 1],\n" +
                
                 "    ];\n";
                 String part2="\n" +
