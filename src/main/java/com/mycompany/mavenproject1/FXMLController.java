@@ -44,21 +44,17 @@ import javafx.scene.web.WebEngine;
 
 public class FXMLController implements Initializable {   
     
-    final static String positive ="Positive";
-    final static String negative ="Negative";
-    final static String neutral = "Neutral";
     static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
     static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
     static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
-    private int positiveCount = 0;
-    private int negativeCount = 0;
-    private int neutralCount = 0;
     private XYChart.Series series1;
     private XYChart.Series series2;
     private XYChart.Series series3;
     ObservableList<PieChart.Data> pieChartData;
-    
+    private String searchTerm;
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
+    
+    //private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     @FXML
     private Tab TweetTab; 
     @FXML
@@ -112,100 +108,47 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
-        if (tweets.isEmpty() == false) {
+        //if its a new search term clear all else add more to current data
+        /*if (!searchField.getText().equals(searchTerm) ){
             // popup "Do you want to save your current session?"
             // if "Save" Save to mongo else clear Table, Charts and map for new search
-            tweets.clear();
             table.refresh();
             series1.getData().clear();
             barChart.getData().clear();
             pieChartData.clear();
             pieChart.getData().clear();
-            positiveCount = 0;
-            negativeCount = 0;
-            neutralCount = 0;
+
         }
-        String searchTerm = searchField.getText();
-        // Query Twitter by topic
-        List<Status> tweetResult = TwitterQuery.getTweets(searchTerm);
-        String sn,text,date,sent,sen;
-        AylienAnalysis alienResults = new AylienAnalysis();
-        /* Try and catch Aylien Rate limit exceeded exception
-        try{*/
-            for (Iterator<Status> it = tweetResult.iterator(); it.hasNext();) {
-                Status s = it.next();
-                sn = s.getUser().getScreenName();
-                text = s.getText();
+        */
+        // Query Twitter by topic and create a collection
+        searchTerm = searchField.getText();
+        TweetCollection tweetCollection = new TweetCollection(TwitterQuery.getTweets(searchTerm));
 
-                // Format date i.e. 9/12/20017
-                String[] month = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-                date = s.getCreatedAt().toString();
-                // get Month, day, year only
-                date =  (Arrays.asList(month).indexOf(date.substring(4,7)) + 1) +
-                        "-" + date.substring(8, 10) + "-" + date.substring(24,date.length());
-
-                // Store text and location to use for markers
-                String[] textLoc =  {text, s.getUser().getLocation()};
-
-                // Analyze Text
-                sen = alienResults.analyzeTweet(text).getPolarity(); 
-                sent = StringUtils.capitalize(sen);
-
-                // Add TextLoc to appropriate Marker List based on Sentiment and increase counts
-                switch (sent){
-                    case "Positive": mapMarkerPositive.add(textLoc); positiveCount++; break;
-                    case "Negative":mapMarkerNegative.add(textLoc); negativeCount++; break;
-                    default: mapMarkerNeutral.add(textLoc); neutralCount++; break;   
-                }
-
-                // Create Table Object and add to tweets List
-                TableObject to = new TableObject(sn,text,date,sent);
-                //System.out.print(to.toString());
-                tweets.add(to);
-            }
-            table.setItems(tweets);
-        //}
-        /*catch(Exception e){
-            Alert alert = new Alert(AlertType.ERROR, "You have reached the daily rate limit for Aylien API Analysis.");
-             Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                alert.close();
-            }
-        }*/
+        // Create Table Objects
+        TableObjectCollection toc = new TableObjectCollection(tweetCollection);
+        table.setItems(toc.getTweetObjects());
          
         //bar chart code
         series1 = new XYChart.Series<>();
-        series1.setName(positive);
+        series1.setName("Positive");
         series2 = new XYChart.Series<>();
-        series2.setName(negative);
+        series2.setName("Negative");
         series3 = new XYChart.Series<>();
-        series3.setName(neutral);
-        XYChart.Data<String,Number> dataPOS = new XYChart.Data("",positiveCount);
-        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", negativeCount);
-        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", neutralCount);
+        series3.setName("Neutral");
+        XYChart.Data<String,Number> dataPOS = new XYChart.Data("",tweetCollection.getPosCount());
+        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", tweetCollection.getNegCount());
+        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", tweetCollection.getNeuCount());
         series1.getData().add(dataPOS);
 	series2.getData().add(dataNEG);
 	series3.getData().add(dataNEU);  
         barChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Summary");
         barChart.getData().addAll(series1,series2,series3);
          
-        
-        
-        /*/to change the values on the bar chart change numbers
-        // set values of 200, 300,100
-        series1 = new XYChart.Series<>();
-        series1.getData().add(new XYChart.Data<>(positive,positiveCount));
-        series1.getData().add(new XYChart.Data<>(negative, negativeCount));
-        series1.getData().add(new XYChart.Data<>(neutral,neutralCount));
-        //barChart.setBarGap(50.0);
-        barChart.getData().add(series1);
-                */
-    
         //piechart code
          pieChartData = FXCollections.observableArrayList(
-            new PieChart.Data("Positive ", positiveCount),
-            new PieChart.Data("Negative",negativeCount),
-            new PieChart.Data("Neutral", neutralCount)
+            new PieChart.Data("Positive ", tweetCollection.getPosCount()),
+            new PieChart.Data("Negative",tweetCollection.getNegCount()),
+            new PieChart.Data("Neutral", tweetCollection.getNeuCount())
         );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
