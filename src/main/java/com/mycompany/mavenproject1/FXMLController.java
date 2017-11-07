@@ -41,17 +41,25 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
-
+import java.lang.StringBuffer;
 public class FXMLController implements Initializable {   
     
     static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
     static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
     static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
+<<<<<<< HEAD
     private XYChart.Series series1;
     private XYChart.Series series2;
     private XYChart.Series series3;
     ObservableList<PieChart.Data> pieChartData;
     private String searchTerm;
+=======
+    private int positiveCount = 0;
+    private int negativeCount = 0;
+    private int neutralCount = 0;
+    StringBuffer allLocations = new StringBuffer();
+    
+>>>>>>> geocoderAPI
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     
     //private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
@@ -145,19 +153,33 @@ public class FXMLController implements Initializable {
         barChart.getData().addAll(series1,series2,series3);
          
         //piechart code
+<<<<<<< HEAD
          pieChartData = FXCollections.observableArrayList(
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
+=======
+        //to change value of pie chart adjust 100,200,300
+         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+            new PieChart.Data("Positive", 200),
+             new PieChart.Data("Negative",300),
+            new PieChart.Data("Neutral", 100)
+           
+        
+    
+>>>>>>> geocoderAPI
         );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
-         
+        //geocoding implementation
+        //Maps mapLocation = new Maps();
+        //mapLocation.getCoordinates();
+        //System.out.println(address);
+        
     }
 
     @FXML
-    private void loadMaps(Event event) {
-        System.out.println("hi");                 
+    private void loadMaps(Event event) {                 
                //look at location array
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
@@ -173,8 +195,8 @@ public class FXMLController implements Initializable {
                 "<script type=\"text/javascript\">\n";
                 String location="    var locations = [\n" +
                 "      ['Tweet Data, Sentiment', 30.984298, -91.96233, 3],\n" +
-                "      ['New York', 40.712775, -74.005973, 2],\n" +
-                "      ['California', 36.778261, -119.417932, 1],\n" +
+                "      ['New York', 30.984298, -91.96233, 2],\n" +
+                "      ['California', 30.984298, -91.96233, 1],\n" +
                
                 "    ];\n";
                 String part2="\n" +
@@ -206,10 +228,6 @@ public class FXMLController implements Initializable {
                 "  </script>\n" +
                 "</body>\n" +
                 "</html>";
-
-
-
-
              /*
                 code centers around the markers
                 var markers = [];//some array
@@ -220,13 +238,15 @@ public class FXMLController implements Initializable {
                 map.fitBounds(bounds);
                 
                 */
-
-
-
         WebEngine engine = webView.getEngine();
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
-        String link = part1+location+part2;
+        Maps mapper = new Maps();
+        StringBuffer b = mapper.getCoordinates();
+        b.deleteCharAt(b.length()-1);
+        b.append("]");
+        System.out.println(b.toString());
+        String link = part1+b+part2;
         engine.loadContent(link);
         
     }
