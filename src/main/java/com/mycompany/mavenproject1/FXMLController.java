@@ -34,7 +34,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
-
+import java.lang.StringBuffer;
 public class FXMLController implements Initializable {   
     
     final static String positive ="Positive";
@@ -46,6 +46,7 @@ public class FXMLController implements Initializable {
     private int positiveCount = 0;
     private int negativeCount = 0;
     private int neutralCount = 0;
+    StringBuffer allLocations = new StringBuffer();
     
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     @FXML
@@ -164,15 +165,14 @@ public class FXMLController implements Initializable {
         );
         pieChart.setData(pieChartData);
         //geocoding implementation
-        Maps mapLocation = new Maps();
-        String address =mapLocation.getCoordinates();
-        System.out.println(address);
+        //Maps mapLocation = new Maps();
+        //mapLocation.getCoordinates();
+        //System.out.println(address);
         
     }
 
     @FXML
-    private void loadMaps(Event event) {
-        System.out.println("hi");                 
+    private void loadMaps(Event event) {                 
                //look at location array
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
@@ -221,10 +221,6 @@ public class FXMLController implements Initializable {
                 "  </script>\n" +
                 "</body>\n" +
                 "</html>";
-
-
-
-
              /*
                 code centers around the markers
                 var markers = [];//some array
@@ -235,13 +231,15 @@ public class FXMLController implements Initializable {
                 map.fitBounds(bounds);
                 
                 */
-
-
-
         WebEngine engine = webView.getEngine();
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
-        String link = part1+location+part2;
+        Maps mapper = new Maps();
+        StringBuffer b = mapper.getCoordinates();
+        b.deleteCharAt(b.length()-1);
+        b.append("]");
+        System.out.println(b.toString());
+        String link = part1+b+part2;
         engine.loadContent(link);
         
     }

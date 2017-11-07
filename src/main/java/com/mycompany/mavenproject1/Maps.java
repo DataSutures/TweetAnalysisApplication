@@ -6,7 +6,7 @@
 package com.mycompany.mavenproject1;
 import java.lang.StringBuilder;
 import java.lang.Object;
-
+import java.lang.StringBuffer;
 //AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw	
 import com.google.maps.GeocodingApi;
 import com.google.maps.GeoApiContext;
@@ -27,7 +27,7 @@ public class Maps {
 //      +"&client=gme-YOUR_CLIENT_ID"
 //      +"&signature=YOUR_URL_SIGNATURE";
      List<GeocodingResult[]> code = new ArrayList();
-     ArrayList<String> initalLocation = new ArrayList();
+     ArrayList<String> initLocation = new ArrayList();
    public Maps(){
        location ="Los Angles, CA";
        
@@ -39,13 +39,16 @@ public class Maps {
     
     //handles multiple address
     public Maps(ArrayList a){
-        initalLocation = a;
+        initLocation = a;
     }
     
     //geocode address
-    public String getCoordinates()
+    //update needs to take in string list ideally in this format
+    //"Lafayette,LA", "New York,NY", "Los Angles,CA"
+    public StringBuffer getCoordinates()
     {
-        
+        //
+        StringBuffer temp = new StringBuffer();
         GeoApiContext context = new GeoApiContext.Builder()
             .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
             .build();
@@ -58,16 +61,44 @@ public class Maps {
             //GeocodingApiRequest request = new GeocodingApiRequest(context);
             //GeocodingApiRequest r2 = GeocodingApi.geocode(context, "Lafayette,LA");
             //r2.toString()
-              
-            return gson.toJson(gson.toJson(results[0].geometry.location));
+            //System.out.println(gson.toString(results[0].geometry.location));
+          // System.out.println(gson.toJson(results[0].geometry.location));
+         
+          GeocodingResult[] r; 
+           for(int i=0; i<loc.length; i++){
+              r=  GeocodingApi.geocode(context,loc[i]).await();;
+              code.add(r);
+           
+           }
+           int k=3;
+           //
+           temp.append("var locations = ");
+           temp.append("[");
+           for(GeocodingResult[] g: code){
+               temp.append("[");
+               temp.append(gson.toJson(g[0].formattedAddress));
+               //temp.append("");
+               temp.append(",");
+               temp.append(gson.toJson(g[0].geometry.location.lat));
+               temp.append(",");
+               temp.append(gson.toJson(g[0].geometry.location.lng));
+               temp.append(", "+k);
+               temp.append("]");
+               temp.append(",");
+               k=k-1;
+//              
+           }
+           //System.out.print(temp.toString());
+           return temp;
+           
         }
         
         catch(Exception e)
         {
             System.out.println("Error");
         }
-   
-        return null;
+        return temp;
+        //return null;
     }
 }
 //https://maps.googleapis.com/maps/api/geocode/json?address=Lafayette,LA&key=AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw
