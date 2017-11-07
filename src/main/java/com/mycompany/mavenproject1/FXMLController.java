@@ -165,7 +165,9 @@ public class FXMLController implements Initializable {
         pieChart.setData(pieChartData);
         //geocoding implementation
         Maps mapLocation = new Maps();
-        mapLocation.getCoordinates();
+        String address =mapLocation.getCoordinates();
+        System.out.println(address);
+        
     }
 
     @FXML
