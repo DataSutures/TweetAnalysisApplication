@@ -158,17 +158,13 @@ public class FXMLController implements Initializable {
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
-
+         );
         //to change value of pie chart adjust 100,200,300
          ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
             new PieChart.Data("Positive", 200),
              new PieChart.Data("Negative",300),
             new PieChart.Data("Neutral", 100)
-           
-        
-    
-
-        );
+           );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
         //geocoding implementation
