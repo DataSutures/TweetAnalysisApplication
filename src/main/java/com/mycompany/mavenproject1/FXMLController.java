@@ -47,19 +47,19 @@ public class FXMLController implements Initializable {
     static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
     static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
     static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
-<<<<<<< HEAD
+
     private XYChart.Series series1;
     private XYChart.Series series2;
     private XYChart.Series series3;
     ObservableList<PieChart.Data> pieChartData;
     private String searchTerm;
-=======
+
     private int positiveCount = 0;
     private int negativeCount = 0;
     private int neutralCount = 0;
     StringBuffer allLocations = new StringBuffer();
     
->>>>>>> geocoderAPI
+
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     
     //private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
@@ -153,12 +153,12 @@ public class FXMLController implements Initializable {
         barChart.getData().addAll(series1,series2,series3);
          
         //piechart code
-<<<<<<< HEAD
+
          pieChartData = FXCollections.observableArrayList(
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
-=======
+
         //to change value of pie chart adjust 100,200,300
          ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
             new PieChart.Data("Positive", 200),
@@ -167,7 +167,7 @@ public class FXMLController implements Initializable {
            
         
     
->>>>>>> geocoderAPI
+
         );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
