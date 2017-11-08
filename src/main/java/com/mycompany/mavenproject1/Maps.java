@@ -45,7 +45,7 @@ public class Maps {
     //geocode address
     //update needs to take in string list ideally in this format
     //"Lafayette,LA", "New York,NY", "Los Angles,CA"
-    public StringBuffer getCoordinates()
+    public StringBuffer getCoordinates(ArrayList<String> tweetLocation)
     {
         //
         StringBuffer temp = new StringBuffer();
@@ -56,7 +56,7 @@ public class Maps {
         {
             GeocodingResult[] results =  GeocodingApi.geocode(context,
             location).await();
-            String[] loc = {"Lafayette,LA", "New York,NY", "Los Angles,CA"};
+            //String[] loc = {"Lafayette,LA", "New York,NY", "Los Angles,CA"};
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             //GeocodingApiRequest request = new GeocodingApiRequest(context);
             //GeocodingApiRequest r2 = GeocodingApi.geocode(context, "Lafayette,LA");
@@ -65,8 +65,8 @@ public class Maps {
           // System.out.println(gson.toJson(results[0].geometry.location));
          
           GeocodingResult[] r; 
-           for(int i=0; i<loc.length; i++){
-              r=  GeocodingApi.geocode(context,loc[i]).await();;
+           for(int i=0; i<tweetLocation.size(); i++){
+              r=  GeocodingApi.geocode(context,tweetLocation.get(i)).await();;
               code.add(r);
            
            }

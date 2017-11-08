@@ -58,7 +58,7 @@ public class FXMLController implements Initializable {
     private int negativeCount = 0;
     private int neutralCount = 0;
     StringBuffer allLocations = new StringBuffer();
-    
+    ArrayList<String> tweetLocation;
 
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     
@@ -135,7 +135,8 @@ public class FXMLController implements Initializable {
         // Create Table Objects
         TableObjectCollection toc = new TableObjectCollection(tweetCollection);
         table.setItems(toc.getTweetObjects());
-         
+        tweetLocation = tweetCollection.getLocations();
+        
         //bar chart code
         series1 = new XYChart.Series<>();
         series1.setName("Positive");
@@ -238,10 +239,10 @@ public class FXMLController implements Initializable {
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
         Maps mapper = new Maps();
-        StringBuffer b = mapper.getCoordinates();
+        StringBuffer b = mapper.getCoordinates(tweetLocation);
         b.deleteCharAt(b.length()-1);
         b.append("]");
-        System.out.println(b.toString());
+        //System.out.println(b.toString());
         String link = part1+b+part2;
         engine.loadContent(link);
         
