@@ -12,8 +12,7 @@ public class Tweet {
     private final String tweetText;
     private final String createdOn;
     private String sentiment = "";
-    private final String location;
-    //private String geolocation = ""; // don't know type at this type so I just put string for now
+    private final String location;  // may move location to this level, if we want to do database
 
     public Tweet(Status status)
     {   // set fields
@@ -36,10 +35,10 @@ public class Tweet {
     }
     // Format date i.e. 9/12/20017
     private String formatDate(String date) {
-        // Format date i.e. 9/12/20017
+
         String[] month = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
         return (Arrays.asList(month).indexOf(date.substring(4,7)) + 1) +
-                        "-" + date.substring(8, 10) + "-" + date.substring(24,date.length());
+                        "/" + date.substring(8, 10) + "/" + date.substring(24,date.length());
     }
     // Analyze Text
     private String sentiment(String text) throws TextAPIException {

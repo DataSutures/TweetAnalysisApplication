@@ -116,7 +116,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
-        //if its a new search term clear all else add more to current data
+        //if new search term clear all, else add more to current data
         /*if (!searchField.getText().equals(searchTerm) ){
             // popup "Do you want to save your current session?"
             // if "Save" Save to mongo else clear Table, Charts and map for new search
@@ -130,14 +130,17 @@ public class FXMLController implements Initializable {
         */
         // Query Twitter by topic and create a collection
         searchTerm = searchField.getText();
-        TweetCollection tweetCollection = new TweetCollection(TwitterQuery.getTweets(searchTerm));
+        List<Status> queryResult = TwitterQuery.getTweets(searchTerm);
+        TweetCollection tweetCollection = new TweetCollection(searchTerm,queryResult);
 
-        // Create Table Objects
+        // Create Table Objects and table for table view
         TableObjectCollection toc = new TableObjectCollection(tweetCollection);
         table.setItems(toc.getTweetObjects());
+        
+        // Get locations for map view
         tweetLocation = tweetCollection.getLocations();
         
-        //bar chart code
+        // Configure Bar Chart view
         series1 = new XYChart.Series<>();
         series1.setName("Positive");
         series2 = new XYChart.Series<>();
@@ -153,21 +156,15 @@ public class FXMLController implements Initializable {
         barChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Summary");
         barChart.getData().addAll(series1,series2,series3);
          
-        //piechart code
-
+        // Configure piechart View
          pieChartData = FXCollections.observableArrayList(
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
          );
-        //to change value of pie chart adjust 100,200,300
-         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-            new PieChart.Data("Positive", 200),
-             new PieChart.Data("Negative",300),
-            new PieChart.Data("Neutral", 100)
-           );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
+        
         //geocoding implementation
         //Maps mapLocation = new Maps();
         //mapLocation.getCoordinates();
