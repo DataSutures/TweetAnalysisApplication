@@ -212,8 +212,9 @@ public class FXMLController implements Initializable {
                 "      marker = new google.maps.Marker({\n" +
                 "        position: new google.maps.LatLng(locations[i][1], locations[i][2]),\n" +
                 "        map: map\n" +
+                        
                 "      });\n" +
-                "\n" +
+                "\n" +"bounds.extend(marker.getPosition());" + "\n"+
                 "      google.maps.event.addListener(marker, 'click', (function(marker, i) {\n" +
                 "        return function() {\n" +
                 //info windows set the data for the tweet
@@ -222,6 +223,7 @@ public class FXMLController implements Initializable {
                 "        }\n" +
                 "      })(marker, i));\n" +
                 "    }\n" +
+                     "map.fitBounds(bounds);"+"\n"+
                 "  </script>\n" +
                 "</body>\n" +
                 "</html>";
