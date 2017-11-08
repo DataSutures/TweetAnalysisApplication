@@ -70,8 +70,7 @@ public class Maps {
               code.add(r);
            
            }
-           int k=3;
-           //
+           int k=code.size();
            temp.append("var locations = ");
            temp.append("[");
            for(GeocodingResult[] g: code){
