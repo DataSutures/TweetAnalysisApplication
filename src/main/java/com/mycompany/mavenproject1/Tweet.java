@@ -13,7 +13,7 @@ public class Tweet {
     private final String createdOn;
     private String sentiment = "";
     private final String location;  // may move location to this level, if we want to do database
-
+    
     public Tweet(Status status)
     {   // set fields
         this.screenName = status.getUser().getScreenName();

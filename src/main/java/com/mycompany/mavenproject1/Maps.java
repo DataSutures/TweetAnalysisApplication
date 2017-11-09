@@ -28,6 +28,11 @@ public class Maps {
 //      +"&signature=YOUR_URL_SIGNATURE";
      List<GeocodingResult[]> code = new ArrayList();
      ArrayList<String> initLocation = new ArrayList();
+     StringBuffer temp = new StringBuffer();
+        GeoApiContext context = new GeoApiContext.Builder()
+            .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
+            .build();
+        
    public Maps(){
        location ="Los Angles, CA";
        
@@ -47,15 +52,10 @@ public class Maps {
     //"Lafayette,LA", "New York,NY", "Los Angles,CA"
     public StringBuffer getCoordinates(ArrayList<String> tweetLocation)
     {
-        //
-        StringBuffer temp = new StringBuffer();
-        GeoApiContext context = new GeoApiContext.Builder()
-            .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
-            .build();
         try
         {
-            GeocodingResult[] results =  GeocodingApi.geocode(context,
-            location).await();
+            //GeocodingResult[] results =  GeocodingApi.geocode(context,
+            //location).await();
             //String[] loc = {"Lafayette,LA", "New York,NY", "Los Angles,CA"};
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             //GeocodingApiRequest request = new GeocodingApiRequest(context);

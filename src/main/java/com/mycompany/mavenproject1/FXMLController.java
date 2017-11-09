@@ -146,7 +146,7 @@ public class FXMLController implements Initializable {
         series2 = new XYChart.Series<>();
         series2.setName("Negative");
         series3 = new XYChart.Series<>();
-        series3.setName("Neutral");
+        //series3.setName("Neutral");
         XYChart.Data<String,Number> dataPOS = new XYChart.Data("",tweetCollection.getPosCount());
         XYChart.Data<String, Number> dataNEG = new XYChart.Data("", tweetCollection.getNegCount());
         XYChart.Data<String, Number> dataNEU = new XYChart.Data("", tweetCollection.getNeuCount());
