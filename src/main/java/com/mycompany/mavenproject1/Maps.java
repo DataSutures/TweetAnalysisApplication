@@ -28,6 +28,9 @@ public class Maps {
 //      +"&signature=YOUR_URL_SIGNATURE";
      List<GeocodingResult[]> code = new ArrayList();
      ArrayList<String> initLocation = new ArrayList();
+     GeoApiContext context = new GeoApiContext.Builder()
+            .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
+            .build();
    public Maps(){
        location ="Los Angles, CA";
        
@@ -49,9 +52,7 @@ public class Maps {
     {
         //
         StringBuffer temp = new StringBuffer();
-        GeoApiContext context = new GeoApiContext.Builder()
-            .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
-            .build();
+       
         try
         {
             GeocodingResult[] results =  GeocodingApi.geocode(context,
@@ -63,31 +64,28 @@ public class Maps {
             //r2.toString()
             //System.out.println(gson.toString(results[0].geometry.location));
           // System.out.println(gson.toJson(results[0].geometry.location));
-         
-          GeocodingResult[] r; 
+         temp.append("var locations = ");
+          temp.append("[");
+          GeocodingResult[] r;
+      
+          
            for(int i=0; i<tweetLocation.size(); i++){
-              r=  GeocodingApi.geocode(context,tweetLocation.get(i)).await();;
-              code.add(r);
-           
-           }
-           int k=code.size();
-           temp.append("var locations = ");
-           temp.append("[");
-           for(GeocodingResult[] g: code){
+              r= GeocodingApi.geocode(context,tweetLocation.get(i)).await();;
                temp.append("[");
-               temp.append(gson.toJson(g[0].formattedAddress));
+               temp.append(gson.toJson(r[0].formattedAddress));
                //temp.append("");
                temp.append(",");
-               temp.append(gson.toJson(g[0].geometry.location.lat));
+               temp.append(gson.toJson(r[0].geometry.location.lat));
                temp.append(",");
-               temp.append(gson.toJson(g[0].geometry.location.lng));
-               temp.append(", "+k);
+               temp.append(gson.toJson(r[0].geometry.location.lng));
+               temp.append(", ");
                temp.append("]");
-               temp.append(",");
-               k=k-1;
-//              
+               temp.append(",");           
            }
-           //System.out.print(temp.toString());
+           //int k=code.size();
+           
+          
+           System.out.print(temp.toString());
            return temp;
            
         }
