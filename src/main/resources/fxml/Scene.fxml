@@ -10,6 +10,7 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import com.mycompany.mavenproject1.TweetDeleteCellValueFactory?>
 
 <AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="0.0" prefHeight="634.0" prefWidth="890.0" style="-fx-background-color: #2C3E50;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.mavenproject1.FXMLController">
    <children>
@@ -79,12 +80,15 @@
                                       </rowConstraints>
                                       
                                                                           <children>
-                                         <TableView fx:id="table" style="-fx-background-color: #FFFFFF;" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+                                         <TableView fx:id="table" editable="true" style="-fx-background-color: #FFFFFF;" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
                                             <columns>
-                                              <TableColumn fx:id="screenName" maxWidth="130.00" minWidth="130.00" prefWidth="134.0" text="Screen Name" />
-                                              <TableColumn fx:id="tweetText" prefWidth="567.0" text="Tweet" />
-                                              <TableColumn fx:id="createdOn" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" text="Date" />
-                                              <TableColumn fx:id="sentiment" maxWidth="100.00" minWidth="100.00" prefWidth="198.0" text="Sentiment" />
+                                              <TableColumn fx:id="screenName" editable="false" maxWidth="130.00" minWidth="130.00" prefWidth="134.0" text="Screen Name" />
+                                              <TableColumn fx:id="tweetText" editable="false" prefWidth="567.0" text="Tweet" />
+                                              <TableColumn fx:id="createdOn" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" text="Date" />
+                                              <TableColumn fx:id="sentiment" editable="false" maxWidth="340.0" minWidth="100.00" prefWidth="282.0" text="Sentiment" />
+                                                <TableColumn fx:id="checkBox" maxWidth="34.0" minWidth="26.0" prefWidth="36.0" sortable="false" text="Check">
+                                                    <cellValueFactory> <TweetDeleteCellValueFactory/> <!--This is how the magic happens--></cellValueFactory>
+                                                </TableColumn>
                                             </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -100,7 +104,7 @@
                               <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: D7DADB;" VBox.vgrow="ALWAYS">
                                 <items>
                                   <Button mnemonicParsing="false" text="Save" />
-                                    <Button mnemonicParsing="false" text="Delete" />
+                                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
                                 </items>
                               </ToolBar>
                            </children>
