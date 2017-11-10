@@ -208,7 +208,7 @@ public class FXMLController implements Initializable {
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
-         );
+         ));
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
         
@@ -238,8 +238,9 @@ public class FXMLController implements Initializable {
 //            
 //        }    
         TableObject temp;
-        //need to change 5 to actual size of list value
-        for(int i=0; i<5; i++){
+        //need to change 10 to actual size of list value
+        //ideally a value updated when you delete the tweet
+        for(int i=0; i<10; i++){
             if(table.itemsProperty().get().get(i).isSelected()){
                 //table.itemsProperty().get().remove(i);
                 temp=table.itemsProperty().get().get(i);
