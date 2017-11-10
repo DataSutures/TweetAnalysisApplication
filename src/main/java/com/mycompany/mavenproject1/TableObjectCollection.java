@@ -18,13 +18,14 @@ public class TableObjectCollection {
     
     public TableObjectCollection(TweetCollection toc){
         
-        // create a single tableObject
+        // create a single tableObject and add to collection
         for (int i = 0; i < toc.getCollection().size(); i++){
             Tweet t = toc.getCollection().get(i);
             TableObject to = new TableObject(t.getScreenName(),t.getTweetText(),t.getCreatedOn(),t.getSentiment());
             tweets.add(to);
         }
     }
+    // Get Collection
     public ObservableList<TableObject> getTweetObjects() {
         return tweets;
     }

@@ -4,10 +4,9 @@
  * and open the template in the editor.
  */
 package com.mycompany.mavenproject1;
-import java.util.ArrayList;
+
 import java.util.List;
 import twitter4j.Status;
-import java.util.HashMap;
 import java.util.ArrayList;
 
 /**
@@ -16,44 +15,49 @@ import java.util.ArrayList;
  */
 public class TweetCollection {
     
+    private String collectionName = "";
     private List<Tweet> tweets = new ArrayList<>();
     private int positiveCount;
     private int negativeCount;
     private int neutralCount;
     private final ArrayList<String> locations = new ArrayList<>();
-    private int SIZE = 0;
     
-    public TweetCollection(List<Status> tweets) {
+    public TweetCollection(String searchTerm, List<Status> tweets) {
+        
+        // Set collectionName
+        this.collectionName = searchTerm;
         
         // Add all tweets to the collection
         for (Status tweet : tweets) {
             Tweet t = new Tweet(tweet);
             this.tweets.add(t);
         }
-        // count sentiments
-        loadData();
-        // set size of collection
-        this.SIZE = tweets.size();
-        
+        // count sentiments and get locations
+        loadData();    
     }
-    // 
+    // load data for sentiment counts and locations list
     private void loadData() {
         
         for (Tweet tweet : tweets) {
             
-            // load sentiment total data
+            // load sentiment totals data
             String sentiment = tweet.getSentiment();
             switch(sentiment) {
-                case "Positive": this.positiveCount++;
-                case "Negative": this.negativeCount++;
-                case "Neitral": this.neutralCount++;
+                case "Positive": this.positiveCount++; break;
+                case "Negative": this.negativeCount++; break;
+                case "Neutral": this.neutralCount++; break;
             }       
-            // load locations data
-            locations.add(tweet.getLocation());
+            // Load location data, if has location
+            String loc = tweet.getLocation();
+            if(!loc.isEmpty()){
+               locations.add(loc);
+            }
         }
 
     }
-    
+    public String getCollectionName(){
+        return this.collectionName;
+    }
     public int getPosCount() {
         return this.positiveCount;
     }
@@ -67,7 +71,7 @@ public class TweetCollection {
         return locations;
     }
     public int size() {
-        return this.SIZE;
+        return this.tweets.size();
     }
     public List<Tweet> getCollection() {
         return tweets;

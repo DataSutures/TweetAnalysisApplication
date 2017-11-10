@@ -59,18 +59,30 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
+
 import javafx.util.Callback;
+
+
+import java.lang.StringBuffer;
 
 public class FXMLController implements Initializable {   
     
     static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
     static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
     static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
+
     private XYChart.Series series1;
     private XYChart.Series series2;
     private XYChart.Series series3;
     ObservableList<PieChart.Data> pieChartData;
     private String searchTerm;
+
+    private int positiveCount = 0;
+    private int negativeCount = 0;
+    private int neutralCount = 0;
+    StringBuffer allLocations = new StringBuffer();
+    ArrayList<String> tweetLocation;
+
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     
     @FXML
@@ -138,7 +150,7 @@ public class FXMLController implements Initializable {
     
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
-        //if its a new search term clear all else add more to current data
+        //if new search term clear all, else add more to current data
         /*if (!searchField.getText().equals(searchTerm) ){
             // popup "Do you want to save your current session?"
             // if "Save" Save to mongo else clear Table, Charts and map for new search
@@ -152,17 +164,25 @@ public class FXMLController implements Initializable {
         */
         // Query Twitter by topic and create a collection
         searchTerm = searchField.getText();
-        TweetCollection tweetCollection = new TweetCollection(TwitterQuery.getTweets(searchTerm));
+        List<Status> queryResult = TwitterQuery.getTweets(searchTerm);
+        TweetCollection tweetCollection = new TweetCollection(searchTerm,queryResult);
 
-        // Create Table Objects
+        // Create Table Objects and table for table view
         TableObjectCollection toc = new TableObjectCollection(tweetCollection);
         table.setItems(toc.getTweetObjects());
         
+
         
         
        
         
         //bar chart code
+
+        // Get locations for map view
+        tweetLocation = tweetCollection.getLocations();
+        
+        // Configure Bar Chart view
+
         series1 = new XYChart.Series<>();
         series1.setName("Positive");
         series2 = new XYChart.Series<>();
@@ -178,15 +198,25 @@ public class FXMLController implements Initializable {
         barChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Summary");
         barChart.getData().addAll(series1,series2,series3);
          
+
         //piechart code
         pieChartData = FXCollections.observableArrayList(
+
+        // Configure piechart View
+         pieChartData = FXCollections.observableArrayList(
+
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
-        );
+         );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
-         
+        
+        //geocoding implementation
+        //Maps mapLocation = new Maps();
+        //mapLocation.getCoordinates();
+        //System.out.println(address);
+        
     }
 
     
@@ -245,8 +275,7 @@ public class FXMLController implements Initializable {
     
             
     @FXML
-    private void loadMaps(Event event) {
-        System.out.println("hi");                 
+    private void loadMaps(Event event) {                 
                //look at location array
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
@@ -262,16 +291,29 @@ public class FXMLController implements Initializable {
                 "<script type=\"text/javascript\">\n";
                 String location="    var locations = [\n" +
                 "      ['Tweet Data, Sentiment', 30.984298, -91.96233, 3],\n" +
-                "      ['New York', 40.712775, -74.005973, 2],\n" +
-                "      ['California', 36.778261, -119.417932, 1],\n" +
+                "      ['New York', 30.984298, -91.96233, 2],\n" +
+                "      ['California', 30.984298, -91.96233, 1],\n" +
                
                 "    ];\n";
+                String style= "styles: [{\"featureType\":\"all\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"visibility\":\"on\"},{\"color\":\"#3c3c3c\"}]},{\"featureType\":\"all\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"visibility\":\"off\"},{\"hue\":\"#0000ff\"}]},{\"featureType\":\"all\",\"elementType\":\"labels\",\"stylers\":[{\"visibility\":\"on\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"saturation\":36},{\"color\":\"#000000\"},{\"lightness\":40},{\"visibility\":\"off\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"visibility\":\"off\"},{\"color\":\"#000000\"},{\"lightness\":16}]},{\"featureType\":\"all\",\"elementType\":\"labels.icon\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"administrative\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":20}]},{\"featureType\":\"administrative\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":17},{\"weight\":1.2}]},{\"featureType\":\"administrative.country\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"visibility\":\"on\"},{\"color\":\"#ffffff\"},{\"weight\":\"0.62\"},{\"gamma\":\"3.89\"}]},{\"featureType\":\"administrative.country\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"visibility\":\"on\"},{\"color\":\"#ffffff\"}]},{\"featureType\":\"administrative.country\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#e5c163\"}]},{\"featureType\":\"administrative.locality\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#c4c4c4\"}]},{\"featureType\":\"administrative.neighborhood\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#e5c163\"}]},{\"featureType\":\"landscape\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":20}]},{\"featureType\":\"poi\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":21},{\"visibility\":\"on\"}]},{\"featureType\":\"poi.business\",\"elementType\":\"geometry\",\"stylers\":[{\"visibility\":\"on\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#e5c163\"},{\"lightness\":\"0\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"color\":\"#e5c163\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":18}]},{\"featureType\":\"road.arterial\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#575757\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"color\":\"#2c2c2c\"}]},{\"featureType\":\"road.local\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":16}]},{\"featureType\":\"road.local\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#999999\"}]},{\"featureType\":\"transit\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":19}]},{\"featureType\":\"water\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":17}]},{\"featureType\":\"water\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"water\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"visibility\":\"off\"}]}]\n" +
+"                };";
+                String mapOptions = "var mapOptions=  {zoom: 10,\n" +
+                "      center: new google.maps.LatLng(37.09024, -91.962333),\n" + 
+                "styles: [{\"featureType\":\"all\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"visibility\":\"on\"},{\"color\":\"#3c3c3c\"}]},{\"featureType\":\"all\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"visibility\":\"off\"},{\"hue\":\"#0000ff\"}]},{\"featureType\":\"all\",\"elementType\":\"labels\",\"stylers\":[{\"visibility\":\"on\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"saturation\":36},{\"color\":\"#000000\"},{\"lightness\":40},{\"visibility\":\"off\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"visibility\":\"off\"},{\"color\":\"#000000\"},{\"lightness\":16}]},{\"featureType\":\"all\",\"elementType\":\"labels.icon\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"administrative\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":20}]},{\"featureType\":\"administrative\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":17},{\"weight\":1.2}]},{\"featureType\":\"administrative.country\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"visibility\":\"on\"},{\"color\":\"#ffffff\"},{\"weight\":\"0.62\"},{\"gamma\":\"3.89\"}]},{\"featureType\":\"administrative.country\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"visibility\":\"on\"},{\"color\":\"#ffffff\"}]},{\"featureType\":\"administrative.country\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#e5c163\"}]},{\"featureType\":\"administrative.locality\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#c4c4c4\"}]},{\"featureType\":\"administrative.neighborhood\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#e5c163\"}]},{\"featureType\":\"landscape\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":20}]},{\"featureType\":\"poi\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":21},{\"visibility\":\"on\"}]},{\"featureType\":\"poi.business\",\"elementType\":\"geometry\",\"stylers\":[{\"visibility\":\"on\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#e5c163\"},{\"lightness\":\"0\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"color\":\"#e5c163\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":18}]},{\"featureType\":\"road.arterial\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#575757\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"color\":\"#2c2c2c\"}]},{\"featureType\":\"road.local\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":16}]},{\"featureType\":\"road.local\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#999999\"}]},{\"featureType\":\"transit\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":19}]},{\"featureType\":\"water\",\"elementType\":\"geometry\",\"stylers\":[{\"color\":\"#000000\"},{\"lightness\":17}]},{\"featureType\":\"water\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"water\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"visibility\":\"off\"}]}]      "+
+                "    };\n";
+                
+              
+                
+                String mapO =  " var mapElement = document.getElementById('map');"+"\n"+"\nvar map = new google.maps.Map(mapElement, mapOptions);";
+
+                
                 String part2="\n" +
-                "    var map = new google.maps.Map(document.getElementById('map'), {\n" +
-                "      zoom: 10,\n" +
-                "      center: new google.maps.LatLng(37.09024, -91.962333),\n" +
-                "      mapTypeId: google.maps.MapTypeId.ROADMAP\n" +
-                "    });\n" +
+//                "    var map = new google.maps.Map(document.getElementById('map'), {\n" +
+//                "      zoom: 10,\n" +
+//                "      center: new google.maps.LatLng(37.09024, -91.962333),\n" + "mapTypeControlOptions: {"+
+//                "      mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',\n" +
+//"                    'styled_map']\n" + "}"+
+//                "    });\n" +
                 "\n" +
                 "    var infowindow = new google.maps.InfoWindow();\n" +
                 "\n" +
@@ -282,8 +324,9 @@ public class FXMLController implements Initializable {
                 "      marker = new google.maps.Marker({\n" +
                 "        position: new google.maps.LatLng(locations[i][1], locations[i][2]),\n" +
                 "        map: map\n" +
+                        
                 "      });\n" +
-                "\n" +
+                "\n" +"bounds.extend(marker.getPosition());" + "\n"+
                 "      google.maps.event.addListener(marker, 'click', (function(marker, i) {\n" +
                 "        return function() {\n" +
                 //info windows set the data for the tweet
@@ -292,13 +335,16 @@ public class FXMLController implements Initializable {
                 "        }\n" +
                 "      })(marker, i));\n" +
                 "    }\n" +
+                     "map.fitBounds(bounds);"+"\n"+
+                      "map.mapTypes.set('styled_map',styledMapType);" + "/n"
+                       + "map.setMapTypeId('styled_map');"+"/n"+ 
                 "  </script>\n" +
-                "</body>\n" +
+                   "<script>"
+                        + "src=https://maps.googleapis.com/maps/api/js?key=AIzaSyDXjTelK25-Ypa5ykkmbi-tG6GHgbqKZ00"+     
+                
+                       "\n" +"</script>"+
+                        "</body>\n" +
                 "</html>";
-
-
-
-
              /*
                 code centers around the markers
                 var markers = [];//some array
@@ -309,13 +355,15 @@ public class FXMLController implements Initializable {
                 map.fitBounds(bounds);
                 
                 */
-
-
-
         WebEngine engine = webView.getEngine();
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
-        String link = part1+location+part2;
+        Maps mapper = new Maps();
+        StringBuffer b = mapper.getCoordinates(tweetLocation);
+        b.deleteCharAt(b.length()-1);
+        b.append("]");
+        //System.out.println(b.toString());
+        String link = part1+mapOptions+mapO+b+part2;
         engine.loadContent(link);
         
     }
