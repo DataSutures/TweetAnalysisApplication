@@ -33,10 +33,6 @@ public class Maps {
         GeoApiContext context = new GeoApiContext.Builder()
             .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
             .build();
-        
-     GeoApiContext context = new GeoApiContext.Builder()
-            .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
-            .build();
 
    public Maps(){
        location ="Los Angles, CA";

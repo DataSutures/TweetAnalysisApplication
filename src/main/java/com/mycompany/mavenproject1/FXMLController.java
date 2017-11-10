@@ -225,56 +225,19 @@ public class FXMLController implements Initializable {
     private void handleDeleteButton() {
         
         System.out.println("Delete button is being accessed. \n");
-        TableColumn tc = table.getColumns().get(4);
-        //tc.
         ObservableList<TableObject> list = FXCollections.observableArrayList();
-//        for(TableObject o : tweets){
-//            System.out.println("Hakuma Matata");
-//            
-//            if(!o.isSelected()){
-//                System.out.println(o.selected);
-//                list.add(o);
-//            }
-//            
-//        }    
         TableObject temp;
-        //need to change 10 to actual size of list value
-        //ideally a value updated when you delete the tweet
-        for(int i=0; i<10; i++){
+        
+        for(int i=0; i< table.getItems().size(); i++){
             if(table.itemsProperty().get().get(i).isSelected()){
-                //table.itemsProperty().get().remove(i);
                 temp=table.itemsProperty().get().get(i);
                 list.add(temp);
-             //
          }
                     
      }
-        
-        for(TableObject t: list){
-            System.out.println(t.selected);
-            table.getItems().remove(t);
-        }
-        
-//        while(it.hasNext()){
-//            System.out.println("Hakuma");
-//            System.out.println(it.next());
-//            
-//        }
-        
-            //TableObject selectedItem = table.getSelectionModel().getSelectedItem();
-            //TableObject t = tweets.get(0);
-        //table.getItems().remove(t);
-        //table.getItems().clear();
-        //table.setItems(list);
-      
-        //table.refresh();
-     
-        
+        table.getItems().removeAll(list); 
     }
-    
- 
-    
-            
+         
     @FXML
     private void loadMaps(Event event) {                 
                //look at location array
