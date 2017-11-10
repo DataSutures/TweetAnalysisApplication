@@ -7,15 +7,27 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+//import javafx.collections.FXCollections.observableArrayList;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Dialog;
@@ -30,7 +42,11 @@ import java.text.Format;
 
 import twitter4j.Status;
 import java.util.List;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -38,9 +54,12 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
+import javafx.util.Callback;
 
 public class FXMLController implements Initializable {   
     
@@ -54,7 +73,6 @@ public class FXMLController implements Initializable {
     private String searchTerm;
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     
-    //private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     @FXML
     private Tab TweetTab; 
     @FXML
@@ -63,6 +81,8 @@ public class FXMLController implements Initializable {
     private ComboBox<String> filterBox;
     @FXML
     private Button submitButton;
+    @FXML
+    private Button deleteButton;
     @FXML
     private TableView<TableObject> table;
     @FXML 
@@ -73,6 +93,8 @@ public class FXMLController implements Initializable {
     private TableColumn<TableObject, String> createdOn; 
     @FXML
     private TableColumn<TableObject, String> sentiment;
+    @FXML
+    private TableColumn<TableObject, Boolean> checkBox;
     @FXML
     private AnchorPane anchorPane;
     @FXML
@@ -86,14 +108,19 @@ public class FXMLController implements Initializable {
     @FXML
     private CategoryAxis xAxis;
     @FXML
-    private PieChart pieChart;
-    
+    private PieChart pieChart;  
     @FXML
     private Tab MapTab;
     @FXML
     private WebView webView;
-
+    //@FXML 
+    //private ColumnSelectRow columSelect;
         
+    
+    private List<TableObject> tempList = new ArrayList<TableObject>();
+    
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -105,7 +132,10 @@ public class FXMLController implements Initializable {
         sentiment.setCellValueFactory(new PropertyValueFactory<TableObject, String>("sentiment"));
         sentiment.setStyle("-fx-alignment: CENTER;");
     }  
-
+    
+    private TweetCollection tweetCollection;
+    private TableObjectCollection toc;
+    
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
         //if its a new search term clear all else add more to current data
@@ -127,7 +157,11 @@ public class FXMLController implements Initializable {
         // Create Table Objects
         TableObjectCollection toc = new TableObjectCollection(tweetCollection);
         table.setItems(toc.getTweetObjects());
-         
+        
+        
+        
+       
+        
         //bar chart code
         series1 = new XYChart.Series<>();
         series1.setName("Positive");
@@ -145,7 +179,7 @@ public class FXMLController implements Initializable {
         barChart.getData().addAll(series1,series2,series3);
          
         //piechart code
-         pieChartData = FXCollections.observableArrayList(
+        pieChartData = FXCollections.observableArrayList(
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
@@ -155,6 +189,61 @@ public class FXMLController implements Initializable {
          
     }
 
+    
+    
+    @FXML 
+    private void handleDeleteButton() {
+        
+        System.out.println("Delete button is being accessed. \n");
+        TableColumn tc = table.getColumns().get(4);
+        //tc.
+        ObservableList<TableObject> list = FXCollections.observableArrayList();
+//        for(TableObject o : tweets){
+//            System.out.println("Hakuma Matata");
+//            
+//            if(!o.isSelected()){
+//                System.out.println(o.selected);
+//                list.add(o);
+//            }
+//            
+//        }    
+        TableObject temp;
+        //need to change 5 to actual size of list value
+        for(int i=0; i<5; i++){
+            if(table.itemsProperty().get().get(i).isSelected()){
+                //table.itemsProperty().get().remove(i);
+                temp=table.itemsProperty().get().get(i);
+                list.add(temp);
+             //
+         }
+                    
+     }
+        
+        for(TableObject t: list){
+            System.out.println(t.selected);
+            table.getItems().remove(t);
+        }
+        
+//        while(it.hasNext()){
+//            System.out.println("Hakuma");
+//            System.out.println(it.next());
+//            
+//        }
+        
+            //TableObject selectedItem = table.getSelectionModel().getSelectedItem();
+            //TableObject t = tweets.get(0);
+        //table.getItems().remove(t);
+        //table.getItems().clear();
+        //table.setItems(list);
+      
+        //table.refresh();
+     
+        
+    }
+    
+ 
+    
+            
     @FXML
     private void loadMaps(Event event) {
         System.out.println("hi");                 
@@ -231,3 +320,4 @@ public class FXMLController implements Initializable {
         
     }
 }
+
