@@ -130,7 +130,8 @@ public class FXMLController implements Initializable {
         
     
     private List<TableObject> tempList = new ArrayList<TableObject>();
-    
+    private Maps mapper = new Maps();
+    StringBuffer b;
     
     
     @Override
@@ -170,16 +171,11 @@ public class FXMLController implements Initializable {
         // Create Table Objects and table for table view
         TableObjectCollection toc = new TableObjectCollection(tweetCollection);
         table.setItems(toc.getTweetObjects());
-        
-
-        
-        
        
-        
-        //bar chart code
 
-        // Get locations for map view
+        // Get locations and geocodes for map view
         tweetLocation = tweetCollection.getLocations();
+        b = mapper.getCoordinates(tweetLocation);
         
         // Configure Bar Chart view
 
@@ -322,8 +318,6 @@ public class FXMLController implements Initializable {
         WebEngine engine = webView.getEngine();
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
-        Maps mapper = new Maps();
-        StringBuffer b = mapper.getCoordinates(tweetLocation);
         b.deleteCharAt(b.length()-1);
         b.append("]");
         //System.out.println(b.toString());

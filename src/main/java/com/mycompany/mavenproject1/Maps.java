@@ -77,7 +77,6 @@ public class Maps {
               r= GeocodingApi.geocode(context,tweetLocation.get(i)).await();;
                temp.append("[");
                temp.append(gson.toJson(r[0].formattedAddress));
-               //temp.append("");
                temp.append(",");
                temp.append(gson.toJson(r[0].geometry.location.lat));
                temp.append(",");
@@ -89,7 +88,7 @@ public class Maps {
            //int k=code.size();
            
           
-           System.out.print(temp.toString());
+           //System.out.print(temp.toString());
            return temp;
            
         }
