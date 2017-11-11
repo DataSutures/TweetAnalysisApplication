@@ -85,7 +85,7 @@
                                               <TableColumn fx:id="tweetText" editable="false" prefWidth="567.0" text="Tweet" />
                                               <TableColumn fx:id="createdOn" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" text="Date" />
                                               <TableColumn fx:id="sentiment" editable="false" maxWidth="340.0" minWidth="100.00" prefWidth="282.0" text="Sentiment" />
-                                                <TableColumn fx:id="checkBox" maxWidth="34.0" minWidth="26.0" prefWidth="36.0" sortable="false" text="Check" />
+                                                <TableColumn fx:id="checkBox" maxWidth="34.0" minWidth="26.0" prefWidth="36.0" sortable="false" />
                                             </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -100,7 +100,6 @@
                           </AnchorPane>
                               <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: D7DADB;" VBox.vgrow="ALWAYS">
                                 <items>
-                                  <Button mnemonicParsing="false" text="Save" />
                                     <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
                                 </items>
                               </ToolBar>
@@ -129,7 +128,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                  <Tab fx:id="MapTab" onSelectionChanged="#loadMaps" text="Google Map">
+                  <Tab fx:id="MapTab" text="Google Maps">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;">
                            <children>

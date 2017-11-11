@@ -60,11 +60,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
-import javafx.util.Callback;
-
 
 import java.lang.StringBuffer;
-import java.util.Collections;
 
 public class FXMLController implements Initializable {   
     
@@ -77,12 +74,14 @@ public class FXMLController implements Initializable {
     private XYChart.Series series3 = new XYChart.Series();
     ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
     private String searchTerm = "";
+    private String newSearchTerm;
 
     private int positiveCount = 0;
     private int negativeCount = 0;
     private int neutralCount = 0;
     StringBuffer allLocations = new StringBuffer();
     ArrayList<String> tweetLocation;
+    WebEngine engine;
 
     private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
     
@@ -145,58 +144,39 @@ public class FXMLController implements Initializable {
         createdOn.setStyle("-fx-alignment: CENTER;");
         sentiment.setCellValueFactory(new PropertyValueFactory<TableObject, String>("sentiment"));
         sentiment.setStyle("-fx-alignment: CENTER;");
+        TableColumn<TableObject, CheckBox> column = (TableColumn<TableObject, CheckBox>) table.getColumns().get(4);
+        column.setCellValueFactory(new TweetDeleteCellValueFactory());
     }  
-    List<Status> x = new ArrayList<>();
-    private TweetCollection tweetCollection=new TweetCollection("",x);;
-    private TableObjectCollection toc;
-    
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
-        //if new search term clear all, else add more to current data
-        List<Status> queryResult = TwitterQuery.getTweets(searchTerm);
+
+        // Query Twitter by topic and create a collection
+        searchTerm = searchField.getText();
+        TweetCollection tweetCollection = new TweetCollection(searchTerm,TwitterQuery.getTweets(searchTerm));
+        // Create Table Objects
+        TableObjectCollection toc = new TableObjectCollection(tweetCollection);
         
-        for(Status s: queryResult){
-              x.add(s);
-        }
-        
-        // queryResult lists is the live query and x list is the stored list of queries 
-        if (!searchField.getText().equals(searchTerm)){
-            // popup "Do you want to save your current session?"
-            // if "Save" Save to mongo else clear Table, Charts and map for new search
+        //if new search term clear all
+        if (table.getItems().isEmpty() == false){
             table.refresh();
             series1.getData().clear();
             barChart.getData().clear();
             pieChartData.clear();
             pieChart.getData().clear();
-            //even if term is not the same keeps new query but erases old query
-            //because tweet query limit is 5
-            //not exactly optimal solution, needs to be looked over for invalid cases
-            for(int i=x.size()-5; i>0; i--){
-                x.remove(i);
-            }
+            webView.getEngine().load("");
         }
-        
-        // Query Twitter by topic and create a collection
-        searchTerm = searchField.getText();
-        
-        TweetCollection tweetCollection = new TweetCollection(searchTerm,x);
-
-        // Create Table Objects and table for table view
-        TableObjectCollection toc = new TableObjectCollection(tweetCollection);
+        /******** load all views *******/ 
+        // update Table view
         table.setItems(toc.getTweetObjects());
-       
 
-        // Get locations and geocodes for map view
-        tweetLocation = tweetCollection.getLocations();
-        b = mapper.getCoordinates(tweetLocation);
         
-        // Configure Bar Chart view
+        // update Bar Chart view
 
-        //series1 = new XYChart.Series<>();
+        series1 = new XYChart.Series<>();
         series1.setName("Positive");
-        //series2 = new XYChart.Series<>();
+        series2 = new XYChart.Series<>();
         series2.setName("Negative");
-        //series3 = new XYChart.Series<>();
+        series3 = new XYChart.Series<>();
         series3.setName("Neutral");
         XYChart.Data<String,Number> dataPOS = new XYChart.Data("",tweetCollection.getPosCount());
         XYChart.Data<String, Number> dataNEG = new XYChart.Data("", tweetCollection.getNegCount());
@@ -208,49 +188,20 @@ public class FXMLController implements Initializable {
         barChart.getData().addAll(series1,series2,series3);
          
 
-        //piechart code
-        pieChartData = FXCollections.observableArrayList(
-
-        // Configure piechart View
+        // update piechart View
          pieChartData = FXCollections.observableArrayList(
 
             new PieChart.Data("Positive ", tweetCollection.getPosCount()),
             new PieChart.Data("Negative",tweetCollection.getNegCount()),
             new PieChart.Data("Neutral", tweetCollection.getNeuCount())
-         ));
+         );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
         
         
-        //geocoding implementation
-        //Maps mapLocation = new Maps();
-        //mapLocation.getCoordinates();
-        //System.out.println(address);
-        
-    }
-
-    
-    
-    @FXML 
-    private void handleDeleteButton() {
-        
-        System.out.println("Delete button is being accessed. \n");
-        ObservableList<TableObject> list = FXCollections.observableArrayList();
-        TableObject temp;
-        
-        for(int i=0; i< table.getItems().size(); i++){
-            if(table.itemsProperty().get().get(i).isSelected()){
-                temp=table.itemsProperty().get().get(i);
-                list.add(temp);
-         }
-                    
-     }
-        table.getItems().removeAll(list); 
-    }
-         
-    @FXML
-    private void loadMaps(Event event) {                 
-               //look at location array
+        // Update map view 
+        tweetLocation = tweetCollection.getLocations();
+        b = mapper.getCoordinates(tweetLocation);
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
@@ -329,7 +280,7 @@ public class FXMLController implements Initializable {
                 map.fitBounds(bounds);
                 
                 */
-        WebEngine engine = webView.getEngine();
+        engine = webView.getEngine();
         //URL url = getClass().getResource("map.html");
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
         b.deleteCharAt(b.length()-1);
@@ -339,5 +290,25 @@ public class FXMLController implements Initializable {
         engine.loadContent(link);
         
     }
+
+    
+    
+    @FXML 
+    private void handleDeleteButton() {
+        
+        System.out.println("Delete button is being accessed. \n");
+        ObservableList<TableObject> list = FXCollections.observableArrayList();
+        TableObject temp;
+        
+        for(int i=0; i< table.getItems().size(); i++){
+            if(table.itemsProperty().get().get(i).isSelected()){
+                temp=table.itemsProperty().get().get(i);
+                list.add(temp);
+         }
+                    
+     }
+        table.getItems().removeAll(list); 
+    }
+         
 }
 
