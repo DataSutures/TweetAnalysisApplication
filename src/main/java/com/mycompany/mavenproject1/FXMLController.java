@@ -64,6 +64,7 @@ import javafx.util.Callback;
 
 
 import java.lang.StringBuffer;
+import java.util.Collections;
 
 public class FXMLController implements Initializable {   
     
@@ -71,11 +72,11 @@ public class FXMLController implements Initializable {
     static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
     static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
 
-    private XYChart.Series series1;
-    private XYChart.Series series2;
-    private XYChart.Series series3;
-    ObservableList<PieChart.Data> pieChartData;
-    private String searchTerm;
+    private XYChart.Series series1 = new XYChart.Series();
+    private XYChart.Series series2 = new XYChart.Series();
+    private XYChart.Series series3 = new XYChart.Series();
+    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+    private String searchTerm = "";
 
     private int positiveCount = 0;
     private int negativeCount = 0;
@@ -145,14 +146,21 @@ public class FXMLController implements Initializable {
         sentiment.setCellValueFactory(new PropertyValueFactory<TableObject, String>("sentiment"));
         sentiment.setStyle("-fx-alignment: CENTER;");
     }  
-    
-    private TweetCollection tweetCollection;
+    List<Status> x = new ArrayList<>();
+    private TweetCollection tweetCollection=new TweetCollection("",x);;
     private TableObjectCollection toc;
     
     @FXML
     private void handleActionButton(ActionEvent event) throws TextAPIException {
         //if new search term clear all, else add more to current data
-        /*if (!searchField.getText().equals(searchTerm) ){
+        List<Status> queryResult = TwitterQuery.getTweets(searchTerm);
+        
+        for(Status s: queryResult){
+              x.add(s);
+        }
+        
+        // queryResult lists is the live query and x list is the stored list of queries 
+        if (!searchField.getText().equals(searchTerm)){
             // popup "Do you want to save your current session?"
             // if "Save" Save to mongo else clear Table, Charts and map for new search
             table.refresh();
@@ -160,13 +168,18 @@ public class FXMLController implements Initializable {
             barChart.getData().clear();
             pieChartData.clear();
             pieChart.getData().clear();
-
+            //even if term is not the same keeps new query but erases old query
+            //because tweet query limit is 5
+            //not exactly optimal solution, needs to be looked over for invalid cases
+            for(int i=x.size()-5; i>0; i--){
+                x.remove(i);
+            }
         }
-        */
+        
         // Query Twitter by topic and create a collection
         searchTerm = searchField.getText();
-        List<Status> queryResult = TwitterQuery.getTweets(searchTerm);
-        TweetCollection tweetCollection = new TweetCollection(searchTerm,queryResult);
+        
+        TweetCollection tweetCollection = new TweetCollection(searchTerm,x);
 
         // Create Table Objects and table for table view
         TableObjectCollection toc = new TableObjectCollection(tweetCollection);
@@ -179,12 +192,12 @@ public class FXMLController implements Initializable {
         
         // Configure Bar Chart view
 
-        series1 = new XYChart.Series<>();
+        //series1 = new XYChart.Series<>();
         series1.setName("Positive");
-        series2 = new XYChart.Series<>();
+        //series2 = new XYChart.Series<>();
         series2.setName("Negative");
-        series3 = new XYChart.Series<>();
-        //series3.setName("Neutral");
+        //series3 = new XYChart.Series<>();
+        series3.setName("Neutral");
         XYChart.Data<String,Number> dataPOS = new XYChart.Data("",tweetCollection.getPosCount());
         XYChart.Data<String, Number> dataNEG = new XYChart.Data("", tweetCollection.getNegCount());
         XYChart.Data<String, Number> dataNEU = new XYChart.Data("", tweetCollection.getNeuCount());
@@ -207,6 +220,7 @@ public class FXMLController implements Initializable {
          ));
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
+        
         
         //geocoding implementation
         //Maps mapLocation = new Maps();
