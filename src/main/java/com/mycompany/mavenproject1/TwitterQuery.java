@@ -24,7 +24,7 @@ public class TwitterQuery {
         List<Status> tweetsList = new ArrayList<>();
         try {
             Query q = new Query(topic + " -filter:links -filter:retweets -filter:replies geocode:37.09024,-95.712891,2500km");
-            q.setCount(5);
+            q.setCount(25);
             q.setLang("en");
             QueryResult r = twitter.search(q);  
             tweetsList = r.getTweets();

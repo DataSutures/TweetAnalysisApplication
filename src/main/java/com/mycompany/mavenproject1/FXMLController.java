@@ -23,22 +23,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.text.Format;
 
 import twitter4j.Status;
 import java.util.List;
@@ -200,7 +185,7 @@ public class FXMLController implements Initializable {
         
         // Update map view 
         tweetLocation = tweetCollection.getLocations();
-        System.out.print("\nLOCATIONSLOAD: " + tweetCollection.getLocations().toString());
+        System.out.print("\nFIRSTSETLOCATIONS: " + tweetCollection.getLocations().toString());
         Maps mapper = new Maps();
         StringBuffer b = mapper.getCoordinates(tweetLocation);
                String part1 =  "<!DOCTYPE html>\n" +
@@ -307,7 +292,7 @@ public class FXMLController implements Initializable {
             }
         }  
         table.getItems().removeAll(removeList);
-        
+
         //update bar charts
         XYChart.Data<String, Number> dataPOS = new XYChart.Data("",toc.getPosCount());
         XYChart.Data<String, Number> dataNEG = new XYChart.Data("", toc.getNegCount());
@@ -326,12 +311,11 @@ public class FXMLController implements Initializable {
         pieChart.setData(pieChartData);
         
         // Update map view 
-        tweetCollection.getCollection().removeAll(removeList); //removeAll tweets removed from table
         webView.getEngine().load(""); //reset view
         StringBuffer newbuffer; 
         Maps mapper = new Maps();
-        tweetLocation = tweetCollection.getLocations();
-        System.out.print("\nTweets: " + tweetCollection.getCollection() + "\nLOCATIONS: " + tweetCollection.getLocations().toString());
+        tweetLocation = toc.getLocations();
+        System.out.print("\nTweets: " + tweetCollection.getCollection() + "\nAFTERREMOVELOCATIONS: " + tweetCollection.getLocations().toString());
         newbuffer = mapper.getCoordinates(tweetLocation);
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +

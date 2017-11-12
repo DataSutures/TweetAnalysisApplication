@@ -5,6 +5,9 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -38,5 +41,8 @@ public class TableObjectCollection {
     }
     public int getNeuCount(){
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Neutral")).count();
+    }
+    public ArrayList<String> getLocations() {
+        return (ArrayList)toc.stream().map(t -> t.getLocation()).collect(Collectors.toList());
     }
 }

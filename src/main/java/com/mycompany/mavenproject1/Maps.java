@@ -51,52 +51,37 @@ public class Maps {
     //geocode address
     //update needs to take in string list ideally in this format
     //"Lafayette,LA", "New York,NY", "Los Angles,CA"
-    public StringBuffer getCoordinates(ArrayList<String> tweetLocation)
-    {
-        //
-        StringBuffer temp = new StringBuffer();
-       
+    public StringBuffer getCoordinates(ArrayList<String> tweetLocation){
 
-        try
-        {
-            //GeocodingResult[] results =  GeocodingApi.geocode(context,
-            //location).await();
-            //String[] loc = {"Lafayette,LA", "New York,NY", "Los Angles,CA"};
+        StringBuffer temp = new StringBuffer();
+            
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             //GeocodingApiRequest request = new GeocodingApiRequest(context);
             //GeocodingApiRequest r2 = GeocodingApi.geocode(context, "Lafayette,LA");
             //r2.toString()
             //System.out.println(gson.toString(results[0].geometry.location));
           // System.out.println(gson.toJson(results[0].geometry.location));
-         temp.append("var locations = ");
-          temp.append("[");
-          GeocodingResult[] r;
-      
-          
-           for(int i=0; i<tweetLocation.size(); i++){
-              r= GeocodingApi.geocode(context,tweetLocation.get(i)).await();;
-               temp.append("[");
-               temp.append(gson.toJson(r[0].formattedAddress));
-               temp.append(",");
-               temp.append(gson.toJson(r[0].geometry.location.lat));
-               temp.append(",");
-               temp.append(gson.toJson(r[0].geometry.location.lng));
-               temp.append(", ");
-               temp.append("]");
-               temp.append(",");           
+        temp.append("var locations = ");
+        temp.append("[");
+        GeocodingResult[] r;
+
+       for(int i=0; i<tweetLocation.size(); i++){
+           try{
+           r = GeocodingApi.geocode(context,tweetLocation.get(i)).await();
+           temp.append("[");
+           temp.append(gson.toJson(r[0].formattedAddress));
+           temp.append(",");
+           temp.append(gson.toJson(r[0].geometry.location.lat));
+           temp.append(",");
+           temp.append(gson.toJson(r[0].geometry.location.lng));
+           temp.append(", ");
+           temp.append("]");
+           temp.append(",");  
+           }catch(Exception e) {
+               continue;
            }
-           //int k=code.size();
+       }
            
-          
-           //System.out.print(temp.toString());
-           return temp;
-           
-        }
-        
-        catch(Exception e)
-        {
-            System.out.println("Error");
-        }
         return temp;
         //return null;
     }
