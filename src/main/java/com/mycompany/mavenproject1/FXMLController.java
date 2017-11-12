@@ -115,7 +115,7 @@ public class FXMLController implements Initializable {
         
     
     TableObjectCollection toc;
-    TweetCollection tweetCollection;
+
     
     
     @Override
@@ -136,9 +136,7 @@ public class FXMLController implements Initializable {
 
         // Query Twitter by topic and create a collection
         searchTerm = searchField.getText();
-        tweetCollection = new TweetCollection(searchTerm,TwitterQuery.getTweets(searchTerm));
-        // Create Table Objects
-         toc = new TableObjectCollection(tweetCollection);
+        toc = new TableObjectCollection(searchTerm,TwitterQuery.getTweets(searchTerm));
         
         //if new search term clear all
         if (table.getItems().isEmpty() == false){
@@ -184,10 +182,9 @@ public class FXMLController implements Initializable {
         
         
         // Update map view 
-        tweetLocation = tweetCollection.getLocations();
-        System.out.print("\nFIRSTSETLOCATIONS: " + tweetCollection.getLocations().toString());
+        System.out.print("\nFIRSTSETLOCATIONS: " + toc.getLocations().toString());
         Maps mapper = new Maps();
-        StringBuffer b = mapper.getCoordinates(tweetLocation);
+        StringBuffer b = mapper.getCoordinates(toc.getLocations());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
@@ -314,9 +311,8 @@ public class FXMLController implements Initializable {
         webView.getEngine().load(""); //reset view
         StringBuffer newbuffer; 
         Maps mapper = new Maps();
-        tweetLocation = toc.getLocations();
-        System.out.print("\nTweets: " + tweetCollection.getCollection() + "\nAFTERREMOVELOCATIONS: " + tweetCollection.getLocations().toString());
-        newbuffer = mapper.getCoordinates(tweetLocation);
+        System.out.print("\nTweets: " + toc.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + toc.getLocations().toString());
+        newbuffer = mapper.getCoordinates(toc.getLocations());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +

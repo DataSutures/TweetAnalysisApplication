@@ -5,11 +5,15 @@
  */
 package com.mycompany.mavenproject1;
 
+import com.aylien.textapi.TextAPIException;
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import twitter4j.Status;
 
 /**
  *
@@ -18,13 +22,17 @@ import javafx.collections.ObservableList;
 public class TableObjectCollection {
     
     private final ObservableList<TableObject> toc = FXCollections.observableArrayList();
-
-    public TableObjectCollection(TweetCollection tweets){
-        
+    private String collectionName = "";
+    
+    public TableObjectCollection(String searchTerm, List<Status> tweets){
+        this.collectionName = searchTerm;
         // create a single tableObject and add to collection
-        for (int i = 0; i < tweets.getCollection().size(); i++){
-            Tweet t = tweets.getCollection().get(i);
-            TableObject to = new TableObject(t.getScreenName(),t.getTweetText(),t.getCreatedOn(),t.getSentiment(),t.getLocation());
+        for (Status t : tweets) {
+            TableObject to = new TableObject(t.getUser().getScreenName(),
+                                            t.getText(),
+                                            formatDate(t.getCreatedAt().toString()),
+                                            t.getUser().getLocation()
+                                            );
             toc.add(to);
         }
         
@@ -44,5 +52,14 @@ public class TableObjectCollection {
     }
     public ArrayList<String> getLocations() {
         return (ArrayList)toc.stream().map(t -> t.getLocation()).collect(Collectors.toList());
+    }
+   public String getCollectionName(){
+        return this.collectionName;
+    }
+    private String formatDate(String date) {
+
+        String[] month = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+        return (Arrays.asList(month).indexOf(date.substring(4,7)) + 1) +
+                        "/" + date.substring(8, 10) + "/" + date.substring(24,date.length());
     }
 }
