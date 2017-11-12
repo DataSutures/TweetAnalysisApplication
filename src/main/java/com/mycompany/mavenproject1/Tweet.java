@@ -6,14 +6,13 @@
 package com.mycompany.mavenproject1;
 import com.aylien.textapi.TextAPIException;
 import com.sun.xml.internal.ws.util.StringUtils;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
  * @author kimberlysmith
  */
-public class TableObject {
+public class Tweet {
     private SimpleStringProperty screenName = new SimpleStringProperty("");
     private SimpleStringProperty tweetText = new SimpleStringProperty("");
     private SimpleStringProperty createdOn = new SimpleStringProperty("");
@@ -21,7 +20,7 @@ public class TableObject {
     private String location = "";
     public Boolean selected=false;
     
-    public TableObject(String screenName,String tweetText,String createdOn, String location)
+    public Tweet(String screenName,String tweetText,String createdOn, String location)
     {
         this.screenName.set(screenName);
         this.tweetText.set(tweetText);

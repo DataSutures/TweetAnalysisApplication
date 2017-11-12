@@ -6,12 +6,8 @@
 package com.mycompany.mavenproject1;
 
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Iterator;
-
 import javafx.collections.ObservableList;
-
-import twitter4j.Status;
 
 import com.mongodb.util.JSON;
 import com.mongodb.DBObject;
@@ -22,9 +18,6 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.AggregationOutput;
 import org.bson.Document;
-
-import org.json.JSONObject;
-
 
 /**
  *
@@ -47,14 +40,14 @@ public class MongoDB {
         
     }
     // Insert tweets and new feild "Sentiment" with analysis results
-    public void insertTweetCollection(ObservableList<TableObject> tweets){  
+    public void insertTweetCollection(ObservableList<Tweet> tweets){  
         for (int i = 0; i < tweets.size(); i++){
             insertOne(tweets.get(i));
         }
     }
      
     // Creates a new document containing a tweet with reduced fields and inserts it into DB
-    private void insertOne(TableObject tweet){
+    private void insertOne(Tweet tweet){
         Document newDoc = new Document();
         newDoc.append("screenName", tweet.getScreenName())
                 .append("text", tweet.getTweetText())

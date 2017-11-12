@@ -7,128 +7,68 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-//import javafx.collections.FXCollections.observableArrayList;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 import javafx.scene.control.CheckBox;
 import java.util.ArrayList;
-
-import twitter4j.Status;
-import java.util.List;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
-
-
 import java.lang.StringBuffer;
 
 public class FXMLController implements Initializable {   
-    
-    static ArrayList<String[]> mapMarkerPositive = new ArrayList<>();
-    static ArrayList<String[]> mapMarkerNegative= new ArrayList<>();
-    static ArrayList<String[]> mapMarkerNeutral = new ArrayList<>();
 
-    private XYChart.Series series1 = new XYChart.Series();
-    private XYChart.Series series2 = new XYChart.Series();
-    private XYChart.Series series3 = new XYChart.Series();
-    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-    private String searchTerm = "";
-    private String newSearchTerm;
-
-    private int positiveCount = 0;
-    private int negativeCount = 0;
-    private int neutralCount = 0;
-    StringBuffer allLocations = new StringBuffer();
-    ArrayList<String> tweetLocation;
-    WebEngine engine;
-
-    private final ObservableList<TableObject> tweets = FXCollections.observableArrayList();
-    
-    @FXML
-    private Tab TweetTab; 
     @FXML
     private TextField searchField;
     @FXML
-    private ComboBox<String> filterBox;
-    @FXML
-    private Button submitButton;
-    @FXML
-    private Button deleteButton;
-    @FXML
-    private TableView<TableObject> table;
+    private TableView<Tweet> table;
     @FXML 
-    private TableColumn<TableObject, String> screenName;
+    private TableColumn<Tweet, String> screenName;
     @FXML 
-    private TableColumn<TableObject, String> tweetText;
+    private TableColumn<Tweet, String> tweetText;
     @FXML
-    private TableColumn<TableObject, String> createdOn; 
+    private TableColumn<Tweet, String> createdOn; 
     @FXML
-    private TableColumn<TableObject, String> sentiment;
-    @FXML
-    private TableColumn<TableObject, Boolean> checkBox;
-    @FXML
-    private AnchorPane anchorPane;
-    @FXML
-    private AnchorPane anchorPane1;
-    @FXML
-    private Tab ChartTab;
+    private TableColumn<Tweet, String> sentiment;
     @FXML
     private BarChart<String, Number> barChart;
-    @FXML
-    private NumberAxis yAxis;
-    @FXML
-    private CategoryAxis xAxis;
+
     @FXML
     private PieChart pieChart;  
     @FXML
     private Tab MapTab;
     @FXML
     private WebView webView;
-    //@FXML 
-    //private ColumnSelectRow columSelect;
+
         
     
-    TableObjectCollection toc;
-
-    
+    TweetCollection collection;
+    private XYChart.Series series1 = new XYChart.Series();
+    private XYChart.Series series2 = new XYChart.Series();
+    private XYChart.Series series3 = new XYChart.Series();
+    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+    private String searchTerm = "";
+    ArrayList<String> tweetLocation;
+    WebEngine engine;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         // Initialize Table columns
-        screenName.setCellValueFactory(new PropertyValueFactory<TableObject, String>("screenName"));
-        tweetText.setCellValueFactory(new PropertyValueFactory<TableObject, String>("tweetText"));
-        createdOn.setCellValueFactory(new PropertyValueFactory<TableObject, String>("createdOn"));
+        screenName.setCellValueFactory(new PropertyValueFactory<Tweet, String>("screenName"));
+        tweetText.setCellValueFactory(new PropertyValueFactory<Tweet, String>("tweetText"));
+        createdOn.setCellValueFactory(new PropertyValueFactory<Tweet, String>("createdOn"));
         createdOn.setStyle("-fx-alignment: CENTER;");
-        sentiment.setCellValueFactory(new PropertyValueFactory<TableObject, String>("sentiment"));
+        sentiment.setCellValueFactory(new PropertyValueFactory<Tweet, String>("sentiment"));
         sentiment.setStyle("-fx-alignment: CENTER;");
-        TableColumn<TableObject, CheckBox> column = (TableColumn<TableObject, CheckBox>) table.getColumns().get(4);
+        TableColumn<Tweet, CheckBox> column = (TableColumn<Tweet, CheckBox>) table.getColumns().get(4);
         column.setCellValueFactory(new TweetDeleteCellValueFactory());
     }  
     @FXML
@@ -136,7 +76,7 @@ public class FXMLController implements Initializable {
 
         // Query Twitter by topic and create a collection
         searchTerm = searchField.getText();
-        toc = new TableObjectCollection(searchTerm,TwitterQuery.getTweets(searchTerm));
+        collection = new TweetCollection(searchTerm,TwitterQuery.getTweets(searchTerm));
         
         //if new search term clear all
         if (table.getItems().isEmpty() == false){
@@ -149,7 +89,7 @@ public class FXMLController implements Initializable {
         }
         /******** load all views *******/ 
         // update Table view
-        table.setItems(toc.getTweetObjects());
+        table.setItems(collection.getTweetObjects());
 
         
         // update Bar Chart view
@@ -160,9 +100,9 @@ public class FXMLController implements Initializable {
         series2.setName("Negative");
         series3 = new XYChart.Series<>();
         series3.setName("Neutral");
-        XYChart.Data<String, Number> dataPOS = new XYChart.Data("",toc.getPosCount());
-        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", toc.getNegCount());
-        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", toc.getNeuCount());  
+        XYChart.Data<String, Number> dataPOS = new XYChart.Data("",collection.getPosCount());
+        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", collection.getNegCount());
+        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", collection.getNeuCount());  
         series1.getData().add(dataPOS);
 	series2.getData().add(dataNEG);
 	series3.getData().add(dataNEU);  
@@ -171,20 +111,18 @@ public class FXMLController implements Initializable {
          
 
         // update piechart View
-         pieChartData = FXCollections.observableArrayList(
-
-            new PieChart.Data("Positive ", toc.getPosCount()),
-            new PieChart.Data("Negative",toc.getNegCount()),
-            new PieChart.Data("Neutral", toc.getNeuCount())
+         pieChartData = FXCollections.observableArrayList(new PieChart.Data("Positive ", collection.getPosCount()),
+            new PieChart.Data("Negative",collection.getNegCount()),
+            new PieChart.Data("Neutral", collection.getNeuCount())
          );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
         
         
         // Update map view 
-        System.out.print("\nFIRSTSETLOCATIONS: " + toc.getLocations().toString());
+        System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocations().toString());
         Maps mapper = new Maps();
-        StringBuffer b = mapper.getCoordinates(toc.getLocations());
+        StringBuffer b = mapper.getCoordinates(collection.getLocations());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
@@ -279,8 +217,8 @@ public class FXMLController implements Initializable {
     private void handleDeleteButton() {
         
         System.out.println("Delete button is being accessed. \n");
-        ObservableList<TableObject> removeList = FXCollections.observableArrayList();
-        TableObject temp;
+        ObservableList<Tweet> removeList = FXCollections.observableArrayList();
+        Tweet temp;
         
         for(int i=0; i< table.getItems().size(); i++){
             if(table.itemsProperty().get().get(i).isSelected()){
@@ -291,19 +229,18 @@ public class FXMLController implements Initializable {
         table.getItems().removeAll(removeList);
 
         //update bar charts
-        XYChart.Data<String, Number> dataPOS = new XYChart.Data("",toc.getPosCount());
-        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", toc.getNegCount());
-        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", toc.getNeuCount());
+        XYChart.Data<String, Number> dataPOS = new XYChart.Data("",collection.getPosCount());
+        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", collection.getNegCount());
+        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", collection.getNeuCount());
         series1.getData().setAll(dataPOS);
 	series2.getData().setAll(dataNEG);
 	series3.getData().setAll(dataNEU);  
         barChart.getData().setAll(series1,series2,series3);
          
         // update piechart View
-         pieChartData = FXCollections.observableArrayList(
-            new PieChart.Data("Positive ", toc.getPosCount()),
-            new PieChart.Data("Negative",toc.getNegCount()),
-            new PieChart.Data("Neutral", toc.getNeuCount())
+         pieChartData = FXCollections.observableArrayList(new PieChart.Data("Positive ", collection.getPosCount()),
+            new PieChart.Data("Negative",collection.getNegCount()),
+            new PieChart.Data("Neutral", collection.getNeuCount())
          );
         pieChart.setData(pieChartData);
         
@@ -311,8 +248,8 @@ public class FXMLController implements Initializable {
         webView.getEngine().load(""); //reset view
         StringBuffer newbuffer; 
         Maps mapper = new Maps();
-        System.out.print("\nTweets: " + toc.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + toc.getLocations().toString());
-        newbuffer = mapper.getCoordinates(toc.getLocations());
+        System.out.print("\nTweets: " + collection.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + collection.getLocations().toString());
+        newbuffer = mapper.getCoordinates(collection.getLocations());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +

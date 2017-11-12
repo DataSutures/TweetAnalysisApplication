@@ -13,11 +13,11 @@ import javafx.util.Callback;
  *
  * @author kdv7990
  */
-public class TweetDeleteCellValueFactory implements Callback<TableColumn.CellDataFeatures<TableObject, CheckBox>, ObservableValue<CheckBox>> {
+public class TweetDeleteCellValueFactory implements Callback<TableColumn.CellDataFeatures<Tweet, CheckBox>, ObservableValue<CheckBox>> {
      @Override
-    public ObservableValue<CheckBox> call(TableColumn.CellDataFeatures<TableObject, CheckBox> param) {
+    public ObservableValue<CheckBox> call(TableColumn.CellDataFeatures<Tweet, CheckBox> param) {
         //System.out.print("MADE IT");
-        TableObject to = param.getValue();
+        Tweet to = param.getValue();
         CheckBox checkBox = new CheckBox();
         checkBox.selectedProperty().setValue(to.isSelected());
         checkBox.selectedProperty().addListener((ov, old_val, new_val) -> {

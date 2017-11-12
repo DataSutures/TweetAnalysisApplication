@@ -19,16 +19,16 @@ import twitter4j.Status;
  *
  * @author kimberlysmith
  */
-public class TableObjectCollection {
+public class TweetCollection {
     
-    private final ObservableList<TableObject> toc = FXCollections.observableArrayList();
+    private final ObservableList<Tweet> toc = FXCollections.observableArrayList();
     private String collectionName = "";
     
-    public TableObjectCollection(String searchTerm, List<Status> tweets){
+    public TweetCollection(String searchTerm, List<Status> tweets){
         this.collectionName = searchTerm;
         // create a single tableObject and add to collection
         for (Status t : tweets) {
-            TableObject to = new TableObject(t.getUser().getScreenName(),
+            Tweet to = new Tweet(t.getUser().getScreenName(),
                                             t.getText(),
                                             formatDate(t.getCreatedAt().toString()),
                                             t.getUser().getLocation()
@@ -38,7 +38,7 @@ public class TableObjectCollection {
         
 }
     // Get Collection
-    public ObservableList<TableObject> getTweetObjects() {
+    public ObservableList<Tweet> getTweetObjects() {
         return toc;
     }
     public int getPosCount(){
