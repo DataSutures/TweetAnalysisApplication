@@ -8,6 +8,8 @@ package com.mycompany.mavenproject1;
 import java.util.List;
 import twitter4j.Status;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -17,11 +19,9 @@ public class TweetCollection {
     
     private String collectionName = "";
     private List<Tweet> tweets = new ArrayList<>();
-    private int positiveCount = 0;
-    private int negativeCount = 0;
-    private int neutralCount = 0;
-    private final ArrayList<String> locations = new ArrayList<>();
     
+    
+    public TweetCollection(){}
     public TweetCollection(String searchTerm, List<Status> tweets) {
         
         // Set collectionName
@@ -32,43 +32,40 @@ public class TweetCollection {
             Tweet t = new Tweet(tweet);
             this.tweets.add(t);
         }
-        // count sentiments and get locations
-        loadData();    
     }
-    // load data for sentiment counts and locations list
-    private void loadData() {
-        
-        for (Tweet tweet : tweets) {
+    public TweetCollection(TableObjectCollection tableOCollection){
+        // Add all TableObjects to the collection
+        for(int i = 0; i < tableOCollection.getTweetObjects().size(); i++){
             
-            // load sentiment totals data
-            String sentiment = tweet.getSentiment();
-            switch(sentiment) {
-                case "Positive": this.positiveCount++; break;
-                case "Negative": this.negativeCount++; break;
-                case "Neutral": this.neutralCount++; break;
-            }       
-            // Load location data, if has location
-            String loc = tweet.getLocation();
-            if(!loc.isEmpty()){
-               locations.add(loc);
-            }
+            TableObject to = tableOCollection.getTweetObjects().get(i);
+            Tweet t = new Tweet(to.getScreenName(), to.getTweetText(), 
+                                to.getCreatedOn(), to.getSentiment(), 
+                                to.getLocation()
+                            );
+            this.tweets.add(t);
         }
-
+ 
+    }
+    public boolean addAll(List<Tweet> newTweets){
+        return tweets.addAll(newTweets);
+    }
+    public boolean remove(Tweet tweet){
+        return tweets.remove(tweet);
     }
     public String getCollectionName(){
         return this.collectionName;
     }
     public int getPosCount() {
-        return this.positiveCount;
+        return (int)tweets.stream().filter(t -> t.getSentiment().equals("Positive")).count();
     }
     public int getNegCount() {
-        return this.negativeCount;
+        return (int)tweets.stream().filter(t -> t.getSentiment().equals("Negative")).count();
     }
     public int getNeuCount() {
-        return this.neutralCount;
+        return (int)tweets.stream().filter(t -> t.getSentiment().equals("Neutral")).count();
     }
     public ArrayList<String> getLocations() {
-        return locations;
+       return (ArrayList)tweets.stream().map(t -> t.getLocation()).collect(Collectors.toList());
     }
     public int size() {
         return this.tweets.size();

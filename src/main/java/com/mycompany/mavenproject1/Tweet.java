@@ -8,12 +8,20 @@ import twitter4j.Status;
 import java.util.Arrays;
 
 public class Tweet {
-    private final String screenName;
-    private final String tweetText;
-    private final String createdOn;
-    private String sentiment = "";
-    private final String location;  // may move location to this level, if we want to do database
+    private String screenName ="";
+    private String tweetText = "";
+    private String createdOn = "";
+    private String sentiment = "" ;
+    private String location = "";  // may move location to this level, if we want to do database
     
+    
+    public Tweet(String sn, String text, String date, String sent, String loc){
+        this.screenName = sn;
+        this.tweetText = text;
+        this.createdOn = date;
+        this.sentiment = sent;
+        this.location = loc;
+    }
     public Tweet(Status status)
     {   // set fields
         this.screenName = status.getUser().getScreenName();
@@ -72,9 +80,6 @@ public class Tweet {
         return location;
     }
     
-    //public String getgeoLocation() {
-    //    return geolocation;
-    //}
     @Override
     public String toString(){
         return "sn: " + screenName + "\ntext: " + tweetText + "\ncreatedOn: " +
