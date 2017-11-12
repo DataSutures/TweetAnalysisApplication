@@ -17,9 +17,9 @@ public class TweetCollection {
     
     private String collectionName = "";
     private List<Tweet> tweets = new ArrayList<>();
-    private int positiveCount;
-    private int negativeCount;
-    private int neutralCount;
+    private int positiveCount = 0;
+    private int negativeCount = 0;
+    private int neutralCount = 0;
     private final ArrayList<String> locations = new ArrayList<>();
     
     public TweetCollection(String searchTerm, List<Status> tweets) {

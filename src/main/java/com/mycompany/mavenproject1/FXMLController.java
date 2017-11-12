@@ -132,6 +132,7 @@ public class FXMLController implements Initializable {
     private List<TableObject> tempList = new ArrayList<TableObject>();
     private Maps mapper = new Maps();
     StringBuffer b;
+    TableObjectCollection toc;
     
     
     @Override
@@ -154,7 +155,7 @@ public class FXMLController implements Initializable {
         searchTerm = searchField.getText();
         TweetCollection tweetCollection = new TweetCollection(searchTerm,TwitterQuery.getTweets(searchTerm));
         // Create Table Objects
-        TableObjectCollection toc = new TableObjectCollection(tweetCollection);
+         toc = new TableObjectCollection(tweetCollection);
         
         //if new search term clear all
         if (table.getItems().isEmpty() == false){
@@ -178,9 +179,9 @@ public class FXMLController implements Initializable {
         series2.setName("Negative");
         series3 = new XYChart.Series<>();
         series3.setName("Neutral");
-        XYChart.Data<String,Number> dataPOS = new XYChart.Data("",tweetCollection.getPosCount());
-        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", tweetCollection.getNegCount());
-        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", tweetCollection.getNeuCount());
+        XYChart.Data<String, Number> dataPOS = new XYChart.Data("",toc.getPosCount());
+        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", toc.getNegCount());
+        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", toc.getNeuCount());  
         series1.getData().add(dataPOS);
 	series2.getData().add(dataNEG);
 	series3.getData().add(dataNEU);  
@@ -191,9 +192,9 @@ public class FXMLController implements Initializable {
         // update piechart View
          pieChartData = FXCollections.observableArrayList(
 
-            new PieChart.Data("Positive ", tweetCollection.getPosCount()),
-            new PieChart.Data("Negative",tweetCollection.getNegCount()),
-            new PieChart.Data("Neutral", tweetCollection.getNeuCount())
+            new PieChart.Data("Positive ", toc.getPosCount()),
+            new PieChart.Data("Negative",toc.getNegCount()),
+            new PieChart.Data("Neutral", toc.getNeuCount())
          );
         pieChart.setTitle(StringUtils.capitalize(searchTerm) + " Sentiment Percentages");
         pieChart.setData(pieChartData);
@@ -306,8 +307,29 @@ public class FXMLController implements Initializable {
                 list.add(temp);
          }
                     
-     }
-        table.getItems().removeAll(list); 
+     } 
+        toc.getTweetObjects().removeAll(list);
+        //update piecharts and barCharts
+        toc.updateCounts(list);
+        
+        //update bar charts
+        XYChart.Data<String, Number> dataPOS = new XYChart.Data("",toc.getPosCount());
+        XYChart.Data<String, Number> dataNEG = new XYChart.Data("", toc.getNegCount());
+        XYChart.Data<String, Number> dataNEU = new XYChart.Data("", toc.getNeuCount());
+        series1.getData().setAll(dataPOS);
+	series2.getData().setAll(dataNEG);
+	series3.getData().setAll(dataNEU);  
+        barChart.getData().setAll(series1,series2,series3);
+         
+        // update piechart View
+         pieChartData = FXCollections.observableArrayList(
+
+            new PieChart.Data("Positive ", toc.getPosCount()),
+            new PieChart.Data("Negative",toc.getNegCount()),
+            new PieChart.Data("Neutral", toc.getNeuCount())
+         );
+        pieChart.setData(pieChartData);
+        
     }
          
 }
