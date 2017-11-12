@@ -16,17 +16,19 @@ public class TableObject {
     private final SimpleStringProperty tweetText;
     private final SimpleStringProperty createdOn;
     private final SimpleStringProperty sentiment;
+    private final String location;
     public Boolean selected=false;
     
     
     /* private final SimpleStringProperty place;*/
 
-    public TableObject(String screenName,String tweetText,String createdOn,String sentiment/*, String place*/)
+    public TableObject(String screenName,String tweetText,String createdOn,String sentiment, String location)
     {
         this.screenName = new SimpleStringProperty(screenName);
         this.tweetText = new SimpleStringProperty(tweetText);
         this.createdOn = new SimpleStringProperty(createdOn);
         this.sentiment = new SimpleStringProperty(sentiment);
+        this.location = location;
 
     }
     public String getScreenName() {
@@ -44,32 +46,20 @@ public class TableObject {
     public String getSentiment() {
         return sentiment.get();
     }
+    public String getLocation() {
+        return location;
+    }
     
     public Boolean isSelected(){
         return selected;
     }
    
-    
     public void setSelected(boolean b){
         this.selected = b;
-        
-        /*if (check.getValue() == true){
-            check.set(false);
-        }
-        else
-            check.set(true);*/
     }
-
-    /*public void Clear(){
-        
-    }*/
-    /*
-    public String getPlace() {
-        return place.get();
-    */
-    
-    
-    
+    public Tweet toTweetObject(){
+        return new Tweet(screenName.get(), tweetText.get(), createdOn.get(),sentiment.get(), location);
+    }
     @Override
     public String toString(){
         return "sn: " + screenName.get() + "\ntext: " + tweetText.get() + "\ncreatedOn: " +
