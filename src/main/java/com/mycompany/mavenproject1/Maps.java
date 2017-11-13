@@ -66,24 +66,27 @@ public class Maps {
         GeocodingResult[] r;
 
        for(int i=0; i<tweetLocation.size(); i++){
-           try{
-           r = GeocodingApi.geocode(context,tweetLocation.get(i)).await();
-           temp.append("[");
-           temp.append(gson.toJson(r[0].formattedAddress));
-           temp.append(",");
-           temp.append(gson.toJson(r[0].geometry.location.lat));
-           temp.append(",");
-           temp.append(gson.toJson(r[0].geometry.location.lng));
-           temp.append(", ");
-           temp.append("]");
-           temp.append(",");  
-           }catch(Exception e) {
-               continue;
-           }
-       }
-           
-        return temp;
-        //return null;
+
+           String location = tweetLocation.get(i);
+           boolean allLettersorDigits = location.chars().anyMatch(l -> Character.isLetterOrDigit(l));
+           if (allLettersorDigits){
+                try{
+                r = GeocodingApi.geocode(context,tweetLocation.get(i)).await();
+                temp.append("[");
+                temp.append(gson.toJson(r[0].formattedAddress));
+                temp.append(",");
+                temp.append(gson.toJson(r[0].geometry.location.lat));
+                temp.append(",");
+                temp.append(gson.toJson(r[0].geometry.location.lng));
+                temp.append(", ");
+                temp.append("]");
+                temp.append(",");  
+                }catch(Exception e) {
+                    continue;
+                }
+            }
+        }
+       return temp;
     }
 }
 //https://maps.googleapis.com/maps/api/geocode/json?address=Lafayette,LA&key=AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw
