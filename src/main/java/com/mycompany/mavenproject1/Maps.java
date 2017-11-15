@@ -64,9 +64,9 @@ public class Maps {
         temp.append("var locations = ");
         temp.append("[");
         GeocodingResult[] r;
-
+        int k=tweetLocation.size();
        for(int i=0; i<tweetLocation.size(); i++){
-
+           
            String location = tweetLocation.get(i);
            boolean allLettersorDigits = location.chars().anyMatch(l -> Character.isLetterOrDigit(l));
            if (allLettersorDigits){
@@ -79,8 +79,10 @@ public class Maps {
                 temp.append(",");
                 temp.append(gson.toJson(r[0].geometry.location.lng));
                 temp.append(", ");
+                temp.append(k);
                 temp.append("]");
-                temp.append(",");  
+                temp.append(","); 
+                k=k-1;
                 }catch(Exception e) {
                     continue;
                 }

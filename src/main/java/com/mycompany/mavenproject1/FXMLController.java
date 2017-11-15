@@ -120,7 +120,7 @@ public class FXMLController implements Initializable {
         
         
         // Update map view 
-        System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocations().toString());
+        //System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocations().toString());
         Maps mapper = new Maps();
         StringBuffer b = mapper.getCoordinates(collection.getLocations());
                String part1 =  "<!DOCTYPE html>\n" +
@@ -248,7 +248,7 @@ public class FXMLController implements Initializable {
         webView.getEngine().load(""); //reset view
         StringBuffer newbuffer; 
         Maps mapper = new Maps();
-        System.out.print("\nTweets: " + collection.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + collection.getLocations().toString());
+        //System.out.print("\nTweets: " + collection.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + collection.getLocations().toString());
         newbuffer = mapper.getCoordinates(collection.getLocations());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
