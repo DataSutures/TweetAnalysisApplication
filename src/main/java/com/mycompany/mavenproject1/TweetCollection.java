@@ -29,18 +29,15 @@ public class TweetCollection {
 
     public TweetCollection(String searchTerm, List<Status> tweets){
         this.collectionName = searchTerm;
-        // create a single tableObject and add to collection
-        for (Status t : tweets) {
-            Tweet to = new Tweet(t.getUser().getScreenName(),
+        
+        tweets.forEach(t -> toc.add(new Tweet(t.getUser().getScreenName(),
                                             t.getText(),
                                             formatDate(t.getCreatedAt().toString()),
                                             t.getUser().getLocation()
-                                            );
-            toc.add(to);
-            
+                                            )));
         }
         
-}
+
     // Get Collection
     public ObservableList<Tweet> getTweetObjects() {
         return toc;
@@ -55,7 +52,9 @@ public class TweetCollection {
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Neutral")).count();
     }
     public ArrayList<Pair> getLocSentPairs() {
-        return (ArrayList<Pair>)toc.stream().map(obj -> new Pair(obj.getLocation(), obj.getSentiment())).collect(Collectors.toList());
+        return (ArrayList<Pair>)toc.stream()
+                                   .map(obj -> new Pair(obj.getLocation(), obj.getSentiment()))
+                                                                               .collect(Collectors.toList());
          
     }
    public String getCollectionName(){
