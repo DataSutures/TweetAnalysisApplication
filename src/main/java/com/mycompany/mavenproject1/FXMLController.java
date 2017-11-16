@@ -23,6 +23,10 @@ import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 import java.lang.StringBuffer;
 
+/**
+ *
+ * @author Danny
+ */
 public class FXMLController implements Initializable {   
 
     @FXML

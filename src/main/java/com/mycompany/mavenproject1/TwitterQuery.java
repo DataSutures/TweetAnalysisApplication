@@ -15,9 +15,20 @@ import twitter4j.Status;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 
+/**
+ *
+ * @author Danny
+ */
 public class TwitterQuery {
     
     //Search twitter by topic and return Status List
+
+    /**
+     * Gets the tweets associated with the given user search term in the form of a list with status type objects.
+     * @param topic
+     * The search term specified by the user.
+     * @return List
+     */
     public static List<Status> getTweets(String topic){
         
         Twitter twitter = new TwitterFactory().getInstance();

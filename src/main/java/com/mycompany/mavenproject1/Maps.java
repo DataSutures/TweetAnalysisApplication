@@ -20,6 +20,10 @@ import java.util.*;
 import java.util.Iterator;
 import javafx.util.Pair;
 
+/**
+ *
+ * @author Danny
+ */
 public class Maps {
    //String location = "";
 //   String clientID =  "https://maps.googleapis.com/maps/api/directions/json"
@@ -35,7 +39,10 @@ public class Maps {
             .apiKey("AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw")
             .build();
 
-   public Maps(){
+    /**
+     *
+     */
+    public Maps(){
       
        
    }
@@ -43,8 +50,12 @@ public class Maps {
     
     //handles multiple address
   
-   
-    
+    /**
+     * Applies the sentiment value to the location given.
+     * @param sentLocation
+     * Location of origin the tweet was sent from.
+     * @return StringBuffer
+     */
     public StringBuffer applySentiment(ArrayList<Pair> sentLocation){
         StringBuffer returnString = new StringBuffer();
         

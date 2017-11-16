@@ -27,6 +27,13 @@ public class TweetCollection {
     private final ObservableList<Tweet> toc = FXCollections.observableArrayList();
     private String collectionName = "";
 
+    /**
+     * Creates a list of tweets based upon the search term entered by the user.
+     * @param searchTerm
+     * String pertaining to the specified search term set by the user.
+     * @param tweets
+     * List statuses based upon the the search term entered.
+     */
     public TweetCollection(String searchTerm, List<Status> tweets){
         this.collectionName = searchTerm;
         
@@ -39,25 +46,55 @@ public class TweetCollection {
         
 
     // Get Collection
+
+    /**
+     * Returns and ObservableList of Tweet objects.
+     * @return ObservableList
+     */
     public ObservableList<Tweet> getTweetObjects() {
         return toc;
     }
+
+    /**
+     * Returns the count of all the tweets with positive sentiment.
+     * @return sentiment(Positive)
+     */
     public int getPosCount(){
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Positive")).count();
     }
+
+    /**
+     * Returns the count of all the tweets with negative sentiment.
+     * @return sentiment(Negative)
+     */
     public int getNegCount(){
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Negative")).count();
     }
+
+    /**
+     * Returns the count of all the tweets with neutral sentiment.
+     * @return sentiment(Neutral)
+     */
     public int getNeuCount(){
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Neutral")).count();
     }
+
+    /**
+     * Returns the sentiment and location data in the form of an ArrayList of type Pair.
+     * @return ArrayList
+     */
     public ArrayList<Pair> getLocSentPairs() {
         return (ArrayList<Pair>)toc.stream()
                                    .map(obj -> new Pair(obj.getLocation(), obj.getSentiment()))
                                                                                .collect(Collectors.toList());
          
     }
-   public String getCollectionName(){
+
+    /**
+     * Returns the name of the collection.
+     * @return collectionName
+     */
+    public String getCollectionName(){
         return this.collectionName;
     }
     private String formatDate(String date) {

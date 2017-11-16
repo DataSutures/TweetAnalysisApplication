@@ -32,6 +32,14 @@ public class MongoDB {
     /* Creates a new database titled by topic if one does not exist 
     / otherwise returns instance of existing 
     */
+
+    /**
+     * Calls to the MongoDB for data collection.
+     * @param topic
+     * Pertains to the given user search term.
+     * @throws UnknownHostException
+     */
+
     public  MongoDB(String topic) throws UnknownHostException{
         
         mongoClient = new MongoClient() ;
@@ -40,6 +48,12 @@ public class MongoDB {
         
     }
     // Insert tweets and new feild "Sentiment" with analysis results
+
+    /**
+     * Tweet objects are inserted into an ObserableList of type tweet.
+     * @param tweets
+     * The specified data requested by the table and tweet class.
+     */
     public void insertTweetCollection(ObservableList<Tweet> tweets){  
         for (int i = 0; i < tweets.size(); i++){
             insertOne(tweets.get(i));
@@ -56,10 +70,20 @@ public class MongoDB {
  //               .append("place", tweet.getplace());
         tweetsTable.insert((DBObject)JSON.parse(newDoc.toJson()));
     } 
+
+    /**
+     * Returns the entire tweet table.
+     * @return tweetsTable
+     */
     public DBCollection getCollection(){
         return tweetsTable;
     }
     // get totals by sentiment and return Iterable list
+
+    /**
+     * Returns the sentiment totals.
+     * @return sentiment(Totals)
+     */
     public Iterator<DBObject> sentimentTotals(){
         
         DBObject groupFields = new BasicDBObject( "_id", "$sentiment");
@@ -72,6 +96,13 @@ public class MongoDB {
     }
     // Query DB by Sentiment String 
     // Equivalent to MySQL SELECT text, Sentiment FROM tweetsTable WHERE sentiment = inputSentiment
+
+    /**
+     * Queries a given input of sentiment.
+     * @param inputSentiment
+     * Determinant value for sentiment.
+     * @return Iterator
+     */
     public Iterator<DBObject> querySentiment(String inputSentiment){
         
         BasicDBList sentimentList = new BasicDBList();
@@ -86,6 +117,10 @@ public class MongoDB {
     }  
     
     // close connection to DB
+
+    /**
+     *
+     */
     public void close(){
         mongoClient.close();
     }
