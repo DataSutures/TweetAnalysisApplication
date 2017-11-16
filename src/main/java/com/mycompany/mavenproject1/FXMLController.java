@@ -122,7 +122,7 @@ public class FXMLController implements Initializable {
         // Update map view 
         //System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocations().toString());
         Maps mapper = new Maps();
-        StringBuffer b = mapper.applySentiment(collection.getSentLocation());
+        StringBuffer b = mapper.applySentiment(collection.getLocSentHashMap());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
@@ -249,7 +249,7 @@ public class FXMLController implements Initializable {
         StringBuffer newbuffer; 
         Maps mapper = new Maps();
         //System.out.print("\nTweets: " + collection.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + collection.getLocations().toString());
-        newbuffer = mapper.applySentiment(collection.getSentLocation());
+        newbuffer = mapper.applySentiment(collection.getLocSentHashMap());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
@@ -333,7 +333,7 @@ public class FXMLController implements Initializable {
         //String url = getClass().getResource("/TweetAnalysisApplication/map.html").toExternalForm();
         newbuffer.deleteCharAt(newbuffer.length()-1);
         newbuffer.append("]");
-        //System.out.println(b.toString());
+        //System.out.println(newbuffer.toString());
         String link = part1+mapOptions+mapO+newbuffer+part2;
         engine.loadContent(link);
         
