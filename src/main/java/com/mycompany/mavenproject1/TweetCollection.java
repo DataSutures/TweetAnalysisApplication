@@ -13,18 +13,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Pair;
 import twitter4j.Status;
-import java.util.HashMap;
+
+
 
 /**
  *
  * @author kimberlysmith
  */
 public class TweetCollection {
-    
+  
     private final ObservableList<Tweet> toc = FXCollections.observableArrayList();
     private String collectionName = "";
-    //private HashMap hashmap = new HashMap();
+
     public TweetCollection(String searchTerm, List<Status> tweets){
         this.collectionName = searchTerm;
         // create a single tableObject and add to collection
@@ -34,7 +36,6 @@ public class TweetCollection {
                                             formatDate(t.getCreatedAt().toString()),
                                             t.getUser().getLocation()
                                             );
-            //hashmap.put(to.getLocation(),to.getSentiment());
             toc.add(to);
             
         }
@@ -53,8 +54,9 @@ public class TweetCollection {
     public int getNeuCount(){
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Neutral")).count();
     }
-    public HashMap getLocSentHashMap() {
-        return (HashMap)toc.stream().collect(Collectors.toMap(t -> t.getLocation(),t -> t.getSentiment()));
+    public ArrayList<Pair> getLocSentPairs() {
+        return (ArrayList<Pair>)toc.stream().map(obj -> new Pair(obj.getLocation(), obj.getSentiment())).collect(Collectors.toList());
+         
     }
    public String getCollectionName(){
         return this.collectionName;

@@ -18,9 +18,10 @@ import com.google.maps.GeolocationApiRequest;
 import com.google.maps.model.GeocodingResult;
 import java.util.*;
 import java.util.Iterator;
+import javafx.util.Pair;
 
 public class Maps {
-   String location="New York,NY";
+   String location = "";
 //   String clientID =  "https://maps.googleapis.com/maps/api/directions/json"
 //      +"?origin=Toronto"
 //      +"&destination=Montreal"
@@ -91,18 +92,18 @@ public class Maps {
        return temp;
     }
     
-    public StringBuffer applySentiment(HashMap sentLocation){
+    public StringBuffer applySentiment(ArrayList<Pair> sentLocation){
         StringBuffer temp = new StringBuffer();
          temp.append("var locations = ");
         temp.append("[");
         GeocodingResult[] r;
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         //int k=tweetLocation.size();
-        Iterator it = sentLocation.entrySet().iterator();
+        Iterator it = sentLocation.iterator();
         int k=sentLocation.size();
           while(it.hasNext()){
           // String location = tweetLocation.get(i);
-           Map.Entry pair = (Map.Entry<String, String>)it.next();
+           Pair pair = (Pair<String, String>)it.next();
            boolean allLettersorDigits = location.chars().anyMatch(l -> Character.isLetterOrDigit(l));
            
            //if (allLettersorDigits){

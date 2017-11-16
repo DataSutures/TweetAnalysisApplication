@@ -120,9 +120,9 @@ public class FXMLController implements Initializable {
         
         
         // Update map view 
-        //System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocations().toString());
+        //System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocSentPairs().toString());
         Maps mapper = new Maps();
-        StringBuffer b = mapper.applySentiment(collection.getLocSentHashMap());
+        StringBuffer b = mapper.applySentiment(collection.getLocSentPairs());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
@@ -248,8 +248,8 @@ public class FXMLController implements Initializable {
         webView.getEngine().load(""); //reset view
         StringBuffer newbuffer; 
         Maps mapper = new Maps();
-        //System.out.print("\nTweets: " + collection.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + collection.getLocations().toString());
-        newbuffer = mapper.applySentiment(collection.getLocSentHashMap());
+        //System.out.print("\nTweets: " + collection.getTweetObjects().toString()+ "\nAFTERREMOVELOCATIONS: " + collection.getLocSentPairs().toString());
+        newbuffer = mapper.applySentiment(collection.getLocSentPairs());
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +
