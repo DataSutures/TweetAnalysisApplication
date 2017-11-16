@@ -93,15 +93,16 @@ public class Maps {
     }
     
     public StringBuffer applySentiment(ArrayList<Pair> sentLocation){
-        StringBuffer temp = new StringBuffer();
-         temp.append("var locations = ");
-        temp.append("[");
+        StringBuffer returnString = new StringBuffer();
+        returnString.append("var locations = ");
+        returnString.append("[");
         GeocodingResult[] r;
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         //int k=tweetLocation.size();
         Iterator it = sentLocation.iterator();
         int k=sentLocation.size();
           while(it.hasNext()){
+            StringBuffer temp = new StringBuffer();
           // String location = tweetLocation.get(i);
            Pair pair = (Pair<String, String>)it.next();
            boolean allLettersorDigits = location.chars().anyMatch(l -> Character.isLetterOrDigit(l));
@@ -109,24 +110,25 @@ public class Maps {
            //if (allLettersorDigits){
                 try{
                 r = GeocodingApi.geocode(context,(String)pair.getKey()).await();
-                temp.append("[");
-                temp.append("'"+pair.getValue()+"'");
-                temp.append(",");
-                temp.append(gson.toJson(r[0].geometry.location.lat));
-                temp.append(",");
-                temp.append(gson.toJson(r[0].geometry.location.lng));
-                temp.append(", ");
-                temp.append(k);
-                temp.append("]");
-                temp.append(","); 
+                temp.append("[")
+                    .append("'"+pair.getValue()+"'")
+                    .append(",")
+                    .append(gson.toJson(r[0].geometry.location.lat))
+                    .append(",")
+                    .append(gson.toJson(r[0].geometry.location.lng))
+                    .append(", ")
+                    .append(k)
+                    .append("]")
+                    .append(","); 
                 k=k-1;
+                returnString.append(temp);
                 }catch(Exception e){ 
                     continue;
                 }
                     
                 
             }
-        return temp;
+        return returnString;
         }
        
     }
