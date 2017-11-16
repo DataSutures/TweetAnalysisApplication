@@ -121,7 +121,7 @@ public class Maps {
                 temp.append(","); 
                 k=k-1;
                 }catch(Exception e){ 
-                    System.out.println();
+                    continue;
                 }
                     
                 
