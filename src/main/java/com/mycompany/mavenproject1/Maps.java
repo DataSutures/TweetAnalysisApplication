@@ -17,7 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.maps.GeolocationApiRequest;
 import com.google.maps.model.GeocodingResult;
 import java.util.*;
-
+import java.util.Iterator;
 
 public class Maps {
    String location="New York,NY";
@@ -90,5 +90,46 @@ public class Maps {
         }
        return temp;
     }
-}
+    
+    public StringBuffer applySentiment(HashMap sentLocation){
+        StringBuffer temp = new StringBuffer();
+         temp.append("var locations = ");
+        temp.append("[");
+        GeocodingResult[] r;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //int k=tweetLocation.size();
+        Iterator it = sentLocation.entrySet().iterator();
+        int k=sentLocation.size();
+          while(it.hasNext()){
+          // String location = tweetLocation.get(i);
+           Map.Entry pair = (Map.Entry<String, String>)it.next();
+           boolean allLettersorDigits = location.chars().anyMatch(l -> Character.isLetterOrDigit(l));
+           
+           //if (allLettersorDigits){
+                try{
+                r = GeocodingApi.geocode(context,(String)pair.getKey()).await();
+                temp.append("[");
+                temp.append("'"+pair.getValue()+"'");
+                temp.append(",");
+                temp.append(gson.toJson(r[0].geometry.location.lat));
+                temp.append(",");
+                temp.append(gson.toJson(r[0].geometry.location.lng));
+                temp.append(", ");
+                temp.append(k);
+                temp.append("]");
+                temp.append(","); 
+                k=k-1;
+                }catch(Exception e){ 
+                    System.out.println();
+                }
+                    
+                
+            }
+        return temp;
+        }
+       
+    }
+        
+    
+
 //https://maps.googleapis.com/maps/api/geocode/json?address=Lafayette,LA&key=AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import twitter4j.Status;
+import java.util.HashMap;
 
 /**
  *
@@ -23,7 +24,7 @@ public class TweetCollection {
     
     private final ObservableList<Tweet> toc = FXCollections.observableArrayList();
     private String collectionName = "";
-    
+    private HashMap hashmap = new HashMap();
     public TweetCollection(String searchTerm, List<Status> tweets){
         this.collectionName = searchTerm;
         // create a single tableObject and add to collection
@@ -33,7 +34,9 @@ public class TweetCollection {
                                             formatDate(t.getCreatedAt().toString()),
                                             t.getUser().getLocation()
                                             );
+            hashmap.put(to.getLocation(),to.getSentiment());
             toc.add(to);
+            
         }
         
 }
@@ -61,5 +64,9 @@ public class TweetCollection {
         String[] month = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
         return (Arrays.asList(month).indexOf(date.substring(4,7)) + 1) +
                         "/" + date.substring(8, 10) + "/" + date.substring(24,date.length());
+    }
+    public HashMap getSentLocation(){
+        return hashmap;
+    
     }
 }
