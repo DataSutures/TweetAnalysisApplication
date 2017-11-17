@@ -9,8 +9,7 @@ import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- *
- * @author kimberlysmith
+ * Sets and gets constructs of a Tweet.
  */
 public class Tweet {
     private SimpleStringProperty screenName = new SimpleStringProperty("");

@@ -8,8 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- *
- * @author Danny
+ * Begins application.
  */
 public class MainApp extends Application {
 

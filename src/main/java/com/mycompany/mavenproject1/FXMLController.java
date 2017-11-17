@@ -24,8 +24,7 @@ import javafx.scene.web.WebEngine;
 import java.lang.StringBuffer;
 
 /**
- *
- * @author Danny
+ * Initializes, handles, and updates all GUI.
  */
 public class FXMLController implements Initializable {   
 

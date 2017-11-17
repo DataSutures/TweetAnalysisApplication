@@ -11,8 +11,7 @@ import com.aylien.textapi.parameters.SentimentParams;
 import com.aylien.textapi.responses.Sentiment;
 
 /**
- *
- * @author Danny
+ * Analyzes a tweet object through the Aylien API, then gives it a sentiment value.
  */
 public class AylienAnalysis {
     

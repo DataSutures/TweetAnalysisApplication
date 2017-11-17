@@ -10,8 +10,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 /**
- *
- * @author kdv7990
+ * Keeps track of when check boxes are selected and deselected.
  */
 public class TweetDeleteCellValueFactory implements Callback<TableColumn.CellDataFeatures<Tweet, CheckBox>, ObservableValue<CheckBox>> {
      @Override

@@ -20,7 +20,7 @@ import com.mongodb.AggregationOutput;
 import org.bson.Document;
 
 /**
- *
+ * Calls the Mongo Database to save a list of tweets onto the local machine.
  * @author kimberlysmith
  */
 public class MongoDB {
@@ -50,7 +50,7 @@ public class MongoDB {
     // Insert tweets and new feild "Sentiment" with analysis results
 
     /**
-     * Tweet objects are inserted into an ObserableList of type tweet.
+     * Tweet objects are inserted into an ObservableList of type tweet.
      * @param tweets
      * The specified data requested by the table and tweet class.
      */

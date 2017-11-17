@@ -16,8 +16,7 @@ import twitter4j.Query;
 import twitter4j.QueryResult;
 
 /**
- *
- * @author Danny
+ * Creates a list of Tweets.
  */
 public class TwitterQuery {
     

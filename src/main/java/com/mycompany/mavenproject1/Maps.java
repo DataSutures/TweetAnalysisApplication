@@ -21,8 +21,7 @@ import java.util.Iterator;
 import javafx.util.Pair;
 
 /**
- *
- * @author Danny
+ * Handles and controls sentiments for the Maps.
  */
 public class Maps {
    //String location = "";

@@ -19,7 +19,8 @@ import twitter4j.Status;
 
 
 /**
- *
+ * Creates a list of tweets based on the search term entered and returns 
+ * counts of positive, negative, and neutral tweets.
  * @author kimberlysmith
  */
 public class TweetCollection {
@@ -48,7 +49,7 @@ public class TweetCollection {
     // Get Collection
 
     /**
-     * Returns and ObservableList of Tweet objects.
+     * Returns an ObservableList of Tweet objects.
      * @return ObservableList
      */
     public ObservableList<Tweet> getTweetObjects() {
