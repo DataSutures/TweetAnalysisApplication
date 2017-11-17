@@ -18,10 +18,6 @@ import twitter4j.Status;
 
 
 
-/**
- *
- * @author kimberlysmith
- */
 public class TweetCollection {
   
     private final ObservableList<Tweet> toc = FXCollections.observableArrayList();
@@ -31,10 +27,9 @@ public class TweetCollection {
         this.collectionName = searchTerm;
         
         tweets.forEach(t -> toc.add(new Tweet(t.getUser().getScreenName(),
-                                            t.getText(),
-                                            formatDate(t.getCreatedAt().toString()),
-                                            t.getUser().getLocation()
-                                            )));
+                                              t.getText(),
+                                              formatDate(t.getCreatedAt().toString()),
+                                              t.getUser().getLocation())));
         }
         
 
@@ -43,18 +38,22 @@ public class TweetCollection {
         return toc;
     }
     public int getPosCount(){
-        return (int)toc.stream().filter(t -> t.getSentiment().equals("Positive")).count();
+        return (int)toc.stream()
+                       .filter(t -> t.getSentiment().equals("Positive"))
+                       .count();
     }
     public int getNegCount(){
         return (int)toc.stream().filter(t -> t.getSentiment().equals("Negative")).count();
     }
     public int getNeuCount(){
-        return (int)toc.stream().filter(t -> t.getSentiment().equals("Neutral")).count();
+        return (int)toc.stream()
+                       .filter(t -> t.getSentiment().equals("Neutral"))
+                       .count();
     }
     public ArrayList<Pair> getLocSentPairs() {
         return (ArrayList<Pair>)toc.stream()
                                    .map(obj -> new Pair(obj.getLocation(), obj.getSentiment()))
-                                                                               .collect(Collectors.toList());
+                                   .collect(Collectors.toList());
          
     }
    public String getCollectionName(){

@@ -9,10 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
-/**
- *
- * @author kdv7990
- */
+
 public class TweetDeleteCellValueFactory implements Callback<TableColumn.CellDataFeatures<Tweet, CheckBox>, ObservableValue<CheckBox>> {
      @Override
     public ObservableValue<CheckBox> call(TableColumn.CellDataFeatures<Tweet, CheckBox> param) {
