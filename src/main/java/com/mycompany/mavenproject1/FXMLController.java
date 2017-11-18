@@ -123,6 +123,7 @@ public class FXMLController implements Initializable {
         //System.out.print("\nFIRSTSETLOCATIONS: " + collection.getLocSentPairs().toString());
         Maps mapper = new Maps();
         StringBuffer b = mapper.applySentiment(collection.getLocSentPairs());
+        
                String part1 =  "<!DOCTYPE html>\n" +
                 "<html> \n" +
                 "<head> \n" +

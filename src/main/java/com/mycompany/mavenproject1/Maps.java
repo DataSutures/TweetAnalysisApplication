@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package com.mycompany.mavenproject1;
-import java.lang.StringBuilder;
-import java.lang.Object;
 import java.lang.StringBuffer;
 //AIzaSyAP151023bUGcXb0m1_lNxfJi5LXuzzStw	
 import com.google.maps.GeocodingApi;
